@@ -124,7 +124,7 @@ const navbarHTML = `
             </div>
             <div class="d-flex align-items-center flex-nowrap pt-xl-0">
                 <button class="btn btn-primary btn-md-square mx-2" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search"></i></button>
-                <a href="/login/login.html" class="btn btn-primary rounded-pill text-white py-2 px-4 ms-2 flex-wrap flex-sm-shrink-0">Get Sarted</a>
+                <a href="../login/login.html" class="btn btn-primary rounded-pill text-white py-2 px-4 ms-2 flex-wrap flex-sm-shrink-0">Get Sarted</a>
             </div>
         </div>
     </nav>
