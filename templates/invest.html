@@ -1,0 +1,36 @@
+{% extends "dashboard_base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Make Investment</h3>
+                <form method="POST" id="investmentForm">
+                    <div class="mb-3">
+                        <label for="investment_type" class="form-label">Investment Type</label>
+                        <select class="form-select" id="investment_type" name="investment_type" required>
+                            <option value="">Select investment type</option>
+                            <option value="mutual_fund">Micro Mutual Fund (0.5% daily)</option>
+                            <option value="real_estate">Real Estate (20% per annum)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount (NGN)</label>
+                        <input type="number" class="form-control" id="amount" name="amount" min="1000" step="0.01" required>
+                        <div class="form-text">Minimum investment: ₦1000</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="currency" class="form-label">Currency</label>
+                        <select class="form-select" id="currency" name="currency">
+                            <option value="NGN" selected>Naira (NGN)</option>
+                            <option value="USD">US Dollar (USD)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Proceed to Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

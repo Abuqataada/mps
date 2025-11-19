@@ -1,0 +1,655 @@
+{% extends "base.html" %}
+
+{% block title %}MPS - Home{% endblock %}
+
+{% block content %}
+        <!-- Carousel Start -->
+        <div class="header-carousel owl-carousel">
+            <div class="header-carousel-item">
+                <div class="header-carousel-item-img-1">
+                    <img src="{{ url_for('static', filename='img/carousel-1.jfif') }}" class="img-fluid w-100" alt="Image">
+                </div>
+                <div class="carousel-caption">
+                    <div class="carousel-caption-inner text-start p-3">
+                        <h1 class="display-1 text-capitalize text-white mb-4 fadeInUp animate__animated" data-animation="fadeInUp" data-delay="1.3s" style="animation-delay: 1.3s;">Your Partner in Financial Growth and Security</h1>
+                        <p class="mb-5 fs-5 fadeInUp animate__animated" data-animation="fadeInUp" data-delay="1.5s" style="animation-delay: 1.5s;">At MPS, we provide innovative investment solutions that empower individuals and businesses to achieve financial freedom and success.
+                        </p>
+                        {% if current_user.is_authenticated %}
+                        <a class="btn btn-primary rounded-pill py-3 px-5 mb-4 me-4 fadeInUp animate__animated" data-animation="fadeInUp" data-delay="1.5s" style="animation-delay: 1.7s;" href="{{ url_for('dashboard') }}">Dashboard</a>
+                        {% else %}
+                        <a class="btn btn-primary rounded-pill py-3 px-5 mb-4 me-4 fadeInUp animate__animated" data-animation="fadeInUp" data-delay="1.5s" style="animation-delay: 1.7s;" href="{{ url_for('register') }}">Apply Now</a>
+                        {% endif %}
+                        <a class="btn btn-dark rounded-pill py-3 px-5 mb-4 fadeInUp animate__animated" data-animation="fadeInUp" data-delay="1.5s" style="animation-delay: 1.7s;" href="{{ url_for('about') }}">Read More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="header-carousel-item mx-auto">
+                <div class="header-carousel-item-img-2">
+                    <img src="{{ url_for('static', filename='img/carousel-2.jfif') }}" class="img-fluid w-100" alt="Image">
+                </div>
+                <div class="carousel-caption">
+                    <div class="carousel-caption-inner text-center p-3">
+                        <h1 class="display-1 text-capitalize text-white mb-4">Invest Smartly, Build Your Future</h1>
+                        <p class="mb-5 fs-5">Experience a seamless journey in micro mutual fund management, real estate development, and community finance with MPS by your side.
+                        </p>
+                        {% if current_user.is_authenticated %}
+                        <a class="btn btn-primary rounded-pill py-3 px-5 mb-4 me-4" href="{{ url_for('dashboard') }}">Dashboard</a>
+                        {% else %}
+                        <a class="btn btn-primary rounded-pill py-3 px-5 mb-4 me-4" href="{{ url_for('register') }}">Apply Now</a>
+                        {% endif %}
+                        <a class="btn btn-dark rounded-pill py-3 px-5 mb-4" href="{{ url_for('about') }}">Read More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="header-carousel-item">
+                <div class="header-carousel-item-img-3">
+                    <img src="{{ url_for('static', filename='img/carousel-3.jfif') }}" class="img-fluid w-100" alt="Image">
+                </div>
+                <div class="carousel-caption">
+                    <div class="carousel-caption-inner text-end p-3">
+                        <h1 class="display-1 text-capitalize text-white mb-4">Innovation Meets Integrity</h1>
+                        <p class="mb-5 fs-5">With a commitment to transparency and excellence, MPS offers services designed to grow your wealth and strengthen your financial stability.
+                        </p>
+                        {% if current_user.is_authenticated %}
+                        <a class="btn btn-primary rounded-pill py-3 px-5 mb-4 me-4" href="{{ url_for('dashboard') }}">Dashboard</a>
+                        {% else %}
+                        <a class="btn btn-primary rounded-pill py-3 px-5 mb-4 me-4" href="{{ url_for('register') }}">Apply Now</a>
+                        {% endif %}
+                        <a class="btn btn-dark rounded-pill py-3 px-5 mb-4" href="{{ url_for('about') }}">Read More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="header-carousel-item">
+                <div class="header-carousel-item-img-4">
+                    <img src="{{ url_for('static', filename='img/carousel-4.jfif') }}" class="img-fluid w-100" alt="Image">
+                </div>
+                <div class="carousel-caption">
+                    <div class="carousel-caption-inner text-end p-3">
+                        <h1 class="display-1 text-capitalize text-white mb-4">Empowering Communities Through Finance</h1>
+                        <p class="mb-5 fs-5">MPS is more than an investment company—we are dedicated to driving economic growth and creating opportunities for all.
+                        </p>
+                        {% if current_user.is_authenticated %}
+                        <a class="btn btn-primary rounded-pill py-3 px-5 mb-4 me-4" href="{{ url_for('dashboard') }}">Dashboard</a>
+                        {% else %}
+                        <a class="btn btn-primary rounded-pill py-3 px-5 mb-4 me-4" href="{{ url_for('register') }}">Apply Now</a>
+                        {% endif %}
+                        <a class="btn btn-dark rounded-pill py-3 px-5 mb-4" href="{{ url_for('about') }}">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Carousel End -->
+
+        <!-- About Start -->
+        <div class="container-fluid about bg-light py-5">
+            <div class="container py-5">
+                <div class="row g-5 align-items-center">
+                    <div class="col-lg-6 col-xl-5 wow fadeInLeft" data-wow-delay="0.1s">
+                        <div class="about-img">
+                            <img src="{{ url_for('static', filename='img/about-1.jfif') }}" class="img-fluid w-100 rounded-top bg-white" alt="Image">
+                            <img src="{{ url_for('static', filename='img/about-2.jfif') }}" class="img-fluid w-100 rounded-bottom" alt="Image">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-xl-7 wow fadeInRight" data-wow-delay="0.3s">
+                        <h4 class="text-primary">About Us</h4>
+                        <h1 class="display-5 mb-4">The Leading Company for Profitable Investments Globally.</h1>
+                        <p class="text ps-4 mb-4">Welcome to MPS, your trusted partner in investment and financial growth. At MPS, we are committed to empowering individuals and businesses by providing innovative solutions to help you achieve your financial and professional goals.
+
+                            Founded with a vision to create opportunities and foster economic growth, MPS is built on the principles of trust, integrity, and excellence. We strive to deliver exceptional services tailored to meet the unique needs of our clients. We offer a diverse range of services designed to support your aspirations:
+                        </p>
+                        <div class="row g-4 justify-content-between mb-5">
+                            <div class="col-lg-6 col-xl-5">
+                                <p class="text-dark"><i class="fas fa-check-circle text-primary me-1"></i> Micro Mutual Fund Management</p>
+                                <p class="text-dark"><i class="fas fa-check-circle text-primary me-1"></i> Point of Sale (POS) Services</p>
+                                <p class="text-dark mb-0"><i class="fas fa-check-circle text-primary me-1"></i> Real Estate Agency and Development</p>
+                            </div>
+                            <div class="col-lg-6 col-xl-7">
+                                <p class="text-dark"><i class="fas fa-check-circle text-primary me-1"></i> Comprehensive Printing Solutions</p>
+                                <p class="text-dark mb-0"><i class="fas fa-check-circle text-primary me-1"></i> Mutual Community Finance Services</p>
+                                <p class="text-dark mb-0"><i class="fas fa-check-circle text-primary me-1"></i> Partnerships</p>
+                            </div>
+                        </div>
+                        <div class="row g-4 justify-content-between mb-5">
+                            <div class="col-xl-5"><a href="{{ url_for('about') }}" class="btn btn-primary rounded-pill py-3 px-5">Discover More</a></div>
+                            <div class="col-xl-7 mb-5">
+                                <div class="about-customer d-flex position-relative">
+                                    <img src="{{ url_for('static', filename='img/cos-1.jfif') }}" class="img-fluid btn-xl-square position-absolute" style="left: 0; top: 0;"  alt="Image">
+                                    <img src="{{ url_for('static', filename='img/cos-2.jfif') }}" class="img-fluid btn-xl-square position-absolute" style="left: 45px; top: 0;" alt="Image">
+                                    <img src="{{ url_for('static', filename='img/cos-3.jfif') }}" class="img-fluid btn-xl-square position-absolute" style="left: 90px; top: 0;" alt="Image">
+                                    <img src="{{ url_for('static', filename='img/cos-4.jfif') }}" class="img-fluid btn-xl-square position-absolute" style="left: 135px; top: 0;" alt="Image">
+                                    <div class="position-absolute text-dark" style="left: 220px; top: 10px;">
+                                        <p class="mb-0">50k+ Trusted</p>
+                                        <p class="mb-0">Global Customers</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-4 text-center align-items-center justify-content-center">
+                            <div class="col-sm-4">
+                                <div class="bg-primary rounded p-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="counter-value fs-1 fw-bold text-dark" data-toggle="counter-up">4</span>
+                                        <h4 class="text-dark fs-1 mb-0" style="font-weight: 600; font-size: 25px;">k+</h4>
+                                    </div>
+                                    <div class="w-100 d-flex align-items-center justify-content-center">
+                                        <p class="text-white mb-0">Project Complete</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="bg-dark rounded p-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="counter-value fs-1 fw-bold text-white" data-toggle="counter-up">10</span>
+                                        <h4 class="text-white fs-1 mb-0" style="font-weight: 600; font-size: 25px;">+</h4>
+                                    </div>
+                                    <div class="w-100 d-flex align-items-center justify-content-center">
+                                        <p class="mb-0">Years Of Experience</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="bg-primary rounded p-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="counter-value fs-1 fw-bold text-dark" data-toggle="counter-up">25</span>
+                                        <h4 class="text-dark fs-1 mb-0" style="font-weight: 600; font-size: 25px;">+</h4>
+                                    </div>
+                                    <div class="w-100 d-flex align-items-center justify-content-center">
+                                        <p class="text-white mb-0">Team Members</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- About End -->
+
+        <!-- Services Start -->
+        <div class="container-fluid service py-5">
+            <div class="container py-5">
+                <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
+                    <h4 class="text-primary">Our Services</h4>
+                    <h1 class="display-4"> Providing Exceptional Investment and Financial Consulting Services</h1>
+                </div>
+                <div class="row g-4 justify-content-center text-center">
+                    <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="service-item bg-light rounded">
+                            <div class="service-img">
+                                <img src="{{ url_for('static', filename='img/service-1.jpg') }}" class="img-fluid w-100 rounded-top" alt="">
+                            </div>
+                            <div class="service-content text-center p-4">
+                                <div class="service-content-inner">
+                                    <a href="#" class="h4 mb-4 d-inline-flex text-start"><i class="fas fa-donate fa-2x me-2"></i> Micro Mutual Fund Management</a>
+                                    <p class="mb-4"> Helping you grow your wealth with secure and profitable mutual fund investments.
+                                    </p>
+                                    <a class="btn btn-light rounded-pill py-2 px-4" href="{{ url_for('services') }}">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="service-item bg-light rounded">
+                            <div class="service-img">
+                                <img src="{{ url_for('static', filename='img/service-2.jpg') }}" class="img-fluid w-100 rounded-top" alt="">
+                            </div>
+                            <div class="service-content text-center p-4">
+                                <div class="service-content-inner">
+                                    <a href="#" class="h4 mb-4 d-inline-flex text-start"><i class="fas fa-donate fa-2x me-2"></i> Real Estate Agency and Development</a>
+                                    <p class="mb-4"> Connecting you to valuable property opportunities and sustainable real estate projects.
+                                    </p>
+                                    <a class="btn btn-light rounded-pill py-2 px-4" href="{{ url_for('services') }}">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="service-item bg-light rounded">
+                            <div class="service-img">
+                                <img src="{{ url_for('static', filename='img/service-4.jpg') }}" class="img-fluid w-100 rounded-top" alt="">
+                            </div>
+                            <div class="service-content text-center p-4">
+                                <div class="service-content-inner">
+                                    <a href="#" class="h4 mb-4 d-inline-flex text-start"><i class="fas fa-donate fa-2x me-2"></i> Comprehensive Printing Solutions</a>
+                                    <p class="mb-4"> Providing top-quality printing services for all your business and personal needs.
+                                    </p>
+                                    <a class="btn btn-light rounded-pill py-2 px-4" href="{{ url_for('services') }}">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.7s">
+                        <div class="service-item bg-light rounded">
+                            <div class="service-img">
+                                <img src="{{ url_for('static', filename='img/pos-1.jfif') }}" class="img-fluid w-100 rounded-top" alt="">
+                            </div>
+                            <div class="service-content text-center p-4">
+                                <div class="service-content-inner">
+                                    <a href="#" class="h4 mb-4 d-inline-flex text-start"><i class="fas fa-donate fa-2x me-2"></i> Point of Sale (POS) Services</a>
+                                    <p class="mb-4"> Simplifying payment processes for businesses with efficient and reliable POS systems.
+                                    </p>
+                                    <a class="btn btn-light rounded-pill py-2 px-4" href="{{ url_for('services') }}">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <a class="btn btn-primary rounded-pill py-3 px-5 wow fadeInUp" data-wow-delay="0.1s" href="{{ url_for('services') }}">Explore More Services</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Services End -->
+
+        <!-- Blog Start -->
+        <div class="container-fluid blog pb-5">
+            <div class="container pb-5">
+                <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
+                    <h4 class="text-primary">Our Blogs</h4>
+                    <h1 class="display-4">Latest Articles & News from the Blogs</h1>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-6 col-lg-6 col-xl-4 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="blog-item bg-light rounded p-4" style="background-image: url({{ url_for('static', filename='img/bg.png') }});">
+                            <div class="mb-4">
+                                <h4 class="text-primary mb-2">Investment</h4>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-0"><span class="text-dark fw-bold">On</span> Nov 17, 2024</p>
+                                    <p class="mb-0"><span class="text-dark fw-bold">By</span> Mas'ud Jiya</p>
+                                </div>
+                            </div>
+                            <div class="project-img">
+                                <img src="{{ url_for('static', filename='img/blog-1.jpg') }}" class="img-fluid w-100 rounded" alt="Image">
+                                <div class="blog-plus-icon">
+                                    <a href="{{ url_for('static', filename='img/blog-1.jpg') }}" data-lightbox="blog-1" class="btn btn-primary btn-md-square rounded-pill"><i class="fas fa-plus fa-1x"></i></a>
+                                </div>
+                            </div>
+                            <div class="my-4">
+                                <a href="{{ url_for('blog') }}" class="h4">Revisiting Your Investment & Distribution Goals</a>
+                            </div>
+                            <a class="btn btn-primary rounded-pill py-2 px-4" href="{{ url_for('blog') }}">Explore More</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-4 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="blog-item bg-light rounded p-4" style="background-image: url({{ url_for('static', filename='img/bg.png') }});">
+                            <div class="mb-4">
+                                <h4 class="text-primary mb-2">Business</h4>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-0"><span class="text-dark fw-bold">On</span> Nov 19, 2024</p>
+                                    <p class="mb-0"><span class="text-dark fw-bold">By</span> Mas'ud Jiya</p>
+                                </div>
+                            </div>
+                            <div class="project-img">
+                                <img src="{{ url_for('static', filename='img/blog-2.jpg') }}" class="img-fluid w-100 rounded" alt="Image">
+                                <div class="blog-plus-icon">
+                                    <a href="{{ url_for('static', filename='img/blog-2.jpg') }}" data-lightbox="blog-2" class="btn btn-primary btn-md-square rounded-pill"><i class="fas fa-plus fa-1x"></i></a>
+                                </div>
+                            </div>
+                            <div class="my-4">
+                                <a href="{{ url_for('blog') }}" class="h4">Dimensional Fund Advisors Interview with Director</a>
+                            </div>
+                            <a class="btn btn-primary rounded-pill py-2 px-4" href="{{ url_for('blog') }}">Explore More</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-4 wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="blog-item bg-light rounded p-4" style="background-image: url({{ url_for('static', filename='img/bg.png') }});">
+                            <div class="mb-4">
+                                <h4 class="text-primary mb-2">Consulting</h4>
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-0"><span class="text-dark fw-bold">On</span> Nov 23, 2024</p>
+                                    <p class="mb-0"><span class="text-dark fw-bold">By</span> Y. Abuqataada</p>
+                                </div>
+                            </div>
+                            <div class="project-img">
+                                <img src="{{ url_for('static', filename='img/blog-3.jpg') }}" class="img-fluid w-100 rounded" alt="Image">
+                                <div class="blog-plus-icon">
+                                    <a href="{{ url_for('static', filename='img/blog-3.jpg') }}" data-lightbox="blog-3" class="btn btn-primary btn-md-square rounded-pill"><i class="fas fa-plus fa-1x"></i></a>
+                                </div>
+                            </div>
+                            <div class="my-4">
+                                <a href="{{ url_for('blog') }}" class="h4">Interested in Giving Back this year? Here are some tips</a>
+                            </div>
+                            <a class="btn btn-primary rounded-pill py-2 px-4" href="{{ url_for('blog') }}">Explore More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Blog End -->
+
+        <!-- Team Start -->
+        <!--<div class="container-fluid team pb-5">
+            <div class="container pb-5">
+                <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
+                    <h4 class="text-primary">Our Team</h4>
+                    <h1 class="display-4">Our Dedicated Team Member</h1>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="team-item rounded">
+                            <div class="team-img">
+                                <img src="{{ url_for('static', filename='img/ceo-1.jpg') }}" class="img-fluid w-100 rounded-top" alt="Image">
+                                <div class="team-icon">
+                                    <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fas fa-share-alt"></i></a>
+                                    <div class="team-icon-share">
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-facebook-f"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-twitter"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-0" href=""><i class="fab fa-instagram"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-content bg-dark text-center rounded-bottom p-4">
+                                <div class="team-content-inner rounded-bottom">
+                                    <h4 class="text-white">Mas'ud Jiya</h4>
+                                    <p class="text-muted mb-0">CEO & Founder</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="team-item rounded">
+                            <div class="team-img">
+                                <img src="{{ url_for('static', filename='img/tech-1.jpg') }}" class="img-fluid w-100 rounded-top" alt="Image">
+                                <div class="team-icon">
+                                    <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fas fa-share-alt"></i></a>
+                                    <div class="team-icon-share">
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-facebook-f"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-twitter"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-0" href=""><i class="fab fa-instagram"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-content bg-dark text-center rounded-bottom p-4">
+                                <div class="team-content-inner rounded-bottom">
+                                    <h4 class="text-white">Y. Abuqataada</h4>
+                                    <p class="text-muted mb-0">Tech Developer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="team-item rounded">
+                            <div class="team-img">
+                                <img src="{{ url_for('static', filename='img/team-3.jpg') }}" class="img-fluid w-100 rounded-top" alt="Image">
+                                <div class="team-icon">
+                                    <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fas fa-share-alt"></i></a>
+                                    <div class="team-icon-share">
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-facebook-f"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-twitter"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-0" href=""><i class="fab fa-instagram"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-content bg-dark text-center rounded-bottom p-4">
+                                <div class="team-content-inner rounded-bottom">
+                                    <h4 class="text-white">Aleesha Gloria</h4>
+                                    <p class="text-muted mb-0">C.E. Marketer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.7s">
+                        <div class="team-item rounded">
+                            <div class="team-img">
+                                <img src="{{ url_for('static', filename='img/team-4.jpg') }}" class="img-fluid w-100 rounded-top" alt="Image">
+                                <div class="team-icon">
+                                    <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fas fa-share-alt"></i></a>
+                                    <div class="team-icon-share">
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-facebook-f"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-twitter"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-0" href=""><i class="fab fa-instagram"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-content bg-dark text-center rounded-bottom p-4">
+                                <div class="team-content-inner rounded-bottom">
+                                    <h4 class="text-white">David Benjamin</h4>
+                                    <p class="text-muted mb-0">Technical & Financial Expert</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <!-- Team End -->
+
+        <!-- Testimonial Start -->
+        <div class="container-fluid testimonial bg-light py-5">
+            <div class="container py-5">
+                <div class="row g-4 align-items-center">
+                    <div class="col-xl-4 wow fadeInLeft" data-wow-delay="0.1s">
+                        <div class="h-100 rounded">
+                            <h4 class="text-primary">Our Feedbacks </h4>
+                            <h1 class="display-4 mb-4">Clients Reviews</h1>
+                            <p class="mb-4">At MPS, we take immense pride in providing exceptional investment and financial services to our clients. Our customers' satisfaction and success are at the heart of everything we do, and we are grateful for the positive feedback we continue to receive.
+
+                                Clients appreciate MPS for our diverse range of services, from micro mutual fund management and real estate investments to our point-of-sale solutions and community finance services.</p>
+                            <a class="btn btn-primary rounded-pill text-white py-3 px-5" href="{{ url_for('testimonial') }}">Read All Reviews <i class="fas fa-arrow-right ms-2"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-xl-8">
+                        <div class="testimonial-carousel owl-carousel wow fadeInUp" data-wow-delay="0.1s">
+                            <div class="testimonial-item bg-white rounded p-4 wow fadeInUp" data-wow-delay="0.3s">
+                                <div class="d-flex">
+                                    <div><i class="fas fa-quote-left fa-3x text-dark me-3"></i></div>
+                                    <p class="mt-4">"The real estate services provided by MPS are top-notch. They helped me navigate the market and secure profitable properties. Their expertise and attention to detail have been invaluable."
+                                    </p>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <div class="my-auto text-end">
+                                        <h5>John D.</h5>
+                                        <p class="mb-0">Real Estate Investor</p>
+                                    </div>
+                                    <div class="bg-white rounded-circle ms-3">
+                                        <img src="{{ url_for('static', filename='img/testimonial-1.jpg') }}" class="rounded-circle p-2" style="width: 80px; height: 80px; border: 1px solid; border-color: var(--bs-primary);" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="testimonial-item bg-white rounded p-4 wow fadeInUp" data-wow-delay="0.5s">
+                                <div class="d-flex">
+                                    <div><i class="fas fa-quote-left fa-3x text-dark me-3"></i></div>
+                                    <p class="mt-4">"MPS has been a game-changer for my business. Their investment strategies have helped me grow my savings and secure my future. I highly recommend their services to anyone looking for reliable financial guidance."
+                                    </p>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <div class="my-auto text-end">
+                                        <h5>Sarah L.</h5>
+                                        <p class="mb-0">Entrepreneur</p>
+                                    </div>
+                                    <div class="bg-white rounded-circle ms-3">
+                                        <img src="{{ url_for('static', filename='img/testimonial-2.jpg') }}" class="rounded-circle p-2" style="width: 80px; height: 80px; border: 1px solid; border-color: var(--bs-primary);" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="testimonial-item bg-white rounded p-4 wow fadeInUp" data-wow-delay="0.7s">
+                                <div class="d-flex">
+                                    <div><i class="fas fa-quote-left fa-3x text-dark me-3"></i></div>
+                                    <p class="mt-4">"I've been using MPS for their point-of-sale services, and it's been an absolute lifesaver. The system is easy to use, and the support team is always there when I need them. Truly a reliable partner for any business."
+                                    </p>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <div class="my-auto text-end">
+                                        <h5>Emily R.</h5>
+                                        <p class="mb-0">Small Business Owner</p>
+                                    </div>
+                                    <div class="bg-white rounded-circle ms-3">
+                                        <img src="{{ url_for('static', filename='img/testimonial-3.jpg') }}" class="rounded-circle p-2" style="width: 80px; height: 80px; border: 1px solid; border-color: var(--bs-primary);" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Testimonial End -->
+
+        <!-- FAQ Start -->
+        <div class="container-fluid faq py-5">
+            <div class="container py-5">
+                <div class="row g-5 align-items-center">
+                    <div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.1s">
+                        <div class="pb-5">
+                            <h4 class="text-primary">FAQs</h4>
+                            <h1 class="display-4">Get the Answers to Common Questions</h1>
+                        </div>
+                    <div class="accordion bg-light rounded p-4" id="accordionExample">
+                            <div class="accordion-item border-0 mb-4">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button text-dark fs-5 fw-bold rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        How does the 0.5% daily interest work?
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body my-2">
+                                        <h5>Daily Interest Calculation</h5>
+                                        <p>Our micro mutual funds generate 0.5% interest per working day (Monday to Friday). This means your investment grows by 0.5% each business day, excluding weekends and public holidays. For example, if you invest ₦100,000, you'll earn ₦500 in interest on the first working day, and this compounds daily throughout your investment period.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0 mb-4">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed text-dark fs-5 fw-bold rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        When can I withdraw my profits?
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body my-2">
+                                        <h5>Profit Withdrawal Schedule</h5>
+                                        <p>You can withdraw your accumulated profits after every 20 working days from your initial investment date. This means approximately every 4 weeks (excluding weekends). The system automatically calculates when your profits mature and makes them available for withdrawal in your dashboard. Your principal investment remains intact and continues to generate daily interest.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0 mb-4">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed text-dark fs-5 fw-bold rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        What is the minimum investment amount?
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body my-2">
+                                        <h5>Investment Requirements</h5>
+                                        <p>The minimum investment amount for our micro mutual funds is ₦5,000. There's no maximum limit - you can invest as much as you want. For real estate investments, the minimum is ₦500,000 with guaranteed 20% annual returns. We've designed our micro funds to be accessible to everyone while providing substantial returns.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0 mb-4">
+                                <h2 class="accordion-header" id="headingFour">
+                                    <button class="accordion-button collapsed text-dark fs-5 fw-bold rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                        How secure is my investment with MPS?
+                                    </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body my-2">
+                                        <h5>Investment Security</h5>
+                                        <p>Your investment is highly secure through multiple layers of protection: diversified investment portfolios, regulatory compliance, secure banking partnerships, and insurance coverage. We maintain transparent operations and regular audits. All transactions are encrypted and monitored 24/7. Your principal investment is protected while generating consistent returns.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0 mb-4">
+                                <h2 class="accordion-header" id="headingFive">
+                                    <button class="accordion-button collapsed text-dark fs-5 fw-bold rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                        What payment methods do you accept?
+                                    </button>
+                                </h2>
+                                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body my-2">
+                                        <h5>Payment Options</h5>
+                                        <p>We accept multiple payment methods for your convenience: Paystack integration for card payments, direct bank transfers, USSD payments, and automated account funding. All payments are processed securely and reflected instantly in your account. Withdrawals are processed within 24-48 hours directly to your registered bank account.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0 mb-4">
+                                <h2 class="accordion-header" id="headingSix">
+                                    <button class="accordion-button collapsed text-dark fs-5 fw-bold rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                        Can I invest in multiple services at once?
+                                    </button>
+                                </h2>
+                                <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body my-2">
+                                        <h5>Multiple Investment Options</h5>
+                                        <p>Absolutely! You can simultaneously invest in our micro mutual funds, real estate projects, and community finance services. Many of our clients diversify their portfolios across different services to maximize returns and minimize risk. Your dashboard provides a comprehensive view of all your investments and their performance in one place.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0 mb-4">
+                                <h2 class="accordion-header" id="headingSeven">
+                                    <button class="accordion-button collapsed text-dark fs-5 fw-bold rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                                        What are the community donation options?
+                                    </button>
+                                </h2>
+                                <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body my-2">
+                                        <h5>Community Support Programs</h5>
+                                        <p>We offer monthly community donation options at ₦250, ₦500, or ₦1,000 levels. These donations support community development projects, welfare programs, and educational initiatives. You can choose one-time donations or set up recurring monthly contributions. All community donations are transparently managed and impact reports are shared regularly with contributors.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0 mb-0">
+                                <h2 class="accordion-header" id="headingEight">
+                                    <button class="accordion-button collapsed text-dark fs-5 fw-bold rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                        How do I track my investment performance?
+                                    </button>
+                                </h2>
+                                <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body my-2">
+                                        <h5>Investment Tracking</h5>
+                                        <p>You can track your investment performance in real-time through your personalized dashboard. It shows your current balance, daily interest earned, total profits, available withdrawals, and investment growth charts. You'll also receive weekly performance reports via email and can set up custom alerts for important milestones and profit maturity notifications.</p>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    </div>
+                    <div class="col-lg-6 wow fadeInRight" data-wow-delay="0.3s">
+                        <div class="faq-img RotateMoveRight rounded">
+                            <img src="{{ url_for('static', filename='img/faq-img.jpg') }}" class="img-fluid rounded w-100" alt="Investment FAQ">
+                            <div class="mt-4">
+                                <h4 class="text-primary mb-3">Still Have Questions?</h4>
+                                <p class="mb-4">Our financial experts are ready to provide personalized answers and guide you through your investment journey.</p>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary rounded-circle p-2 me-3">
+                                                <i class="fas fa-phone-alt text-white fa-lg"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Call Us Directly</h6>
+                                                <p class="mb-0 text-muted">+234 706 685 9293</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary rounded-circle p-2 me-3">
+                                                <i class="fas fa-envelope text-white fa-lg"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Email Support</h6>
+                                                <p class="mb-0 text-muted">support@mps.com</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary rounded-circle p-2 me-3">
+                                                <i class="fas fa-comments text-white fa-lg"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Live Chat</h6>
+                                                <p class="mb-0 text-muted">Available 24/7 on our platform</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a class="faq-btn btn btn-primary rounded-pill text-white py-3 px-5 mt-4" href="{{ url_for('contact') }}">
+                                Contact Support <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FAQ End -->
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Our Services</h2>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Micro Mutual Fund Management</h5>
+                    <p class="card-text">Invest in our mutual funds with daily interest of 0.5% on working days. Withdraw profits after every 20 working days.</p>
+                    <a href="{{ url_for('invest') }}" class="btn btn-primary">Invest Now</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Real Estate Agent & Development</h5>
+                    <p class="card-text">Real estate investments at 20% per annum. Professional real estate sales agent services.</p>
+                    <a href="{{ url_for('invest') }}" class="btn btn-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">All Kinds of Printing</h5>
+                    <p class="card-text">Comprehensive printing services for all your business and personal needs.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Mutual Community Finance Services</h5>
+                    <p class="card-text">Monthly donations (₦250, ₦500, ₦1000) for community development and welfare.</p>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#donateModal">Donate Now</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Point of Sale Services</h5>
+                    <p class="card-text">Comprehensive POS services for businesses of all sizes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

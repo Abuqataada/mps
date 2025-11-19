@@ -1,0 +1,203 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Dashboard - MPS{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Welcome back, {{ current_user.full_name }}! 👋</h3>
+                    <p class="card-text text-muted">Here's your investment overview and recent activity.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card primary">
+                <div class="stats-icon text-primary">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="stats-value">₦{{ "%.2f"|format(total_investment) }}</div>
+                <div class="stats-label">Total Investment</div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card success">
+                <div class="stats-icon text-success">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stats-value">₦{{ "%.2f"|format(total_interest) }}</div>
+                <div class="stats-label">Total Interest</div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card warning">
+                <div class="stats-icon text-warning">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <div class="stats-value">₦{{ "%.2f"|format(available_withdrawal) }}</div>
+                <div class="stats-label">Available for Withdrawal</div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card danger">
+                <div class="stats-icon text-danger">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <div class="stats-value">{{ investments|length }}</div>
+                <div class="stats-label">Active Investments</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Investments and Quick Actions -->
+    <div class="row">
+        <!-- Recent Investments -->
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list-alt me-2"></i>Recent Investments
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if investments %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Start Date</th>
+                                    <th>Interest</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for investment in investments %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-primary">
+                                            {{ investment.investment_type|replace('_', ' ')|title }}
+                                        </span>
+                                    </td>
+                                    <td>₦{{ "%.2f"|format(investment.amount) }}</td>
+                                    <td>{{ investment.start_date.strftime('%Y-%m-%d') }}</td>
+                                    <td>₦{{ "%.2f"|format(investment.total_interest) }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if investment.is_active else 'secondary' }}">
+                                            {{ 'Active' if investment.is_active else 'Completed' }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No investments yet. Start your first investment today!</p>
+                        <a href="{{ url_for('invest') }}" class="btn btn-primary">Make Investment</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('invest') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus me-2"></i>New Investment
+                        </a>
+                        
+                        {% if available_withdrawal > 0 %}
+                        <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                            <i class="fas fa-download me-2"></i>Withdraw Funds
+                        </button>
+                        {% else %}
+                        <button type="button" class="btn btn-success btn-lg" disabled>
+                            <i class="fas fa-download me-2"></i>Withdraw Funds
+                        </button>
+                        {% endif %}
+                        
+                        <a href="{{ url_for('community_donate') }}" class="btn btn-info btn-lg">
+                            <i class="fas fa-hands-helping me-2"></i>Community Donation
+                        </a>
+                        
+                        <a href="{{ url_for('transactions') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-history me-2"></i>View All Transactions
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interest Info Card -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Investment Info
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">Daily Interest Rate</small>
+                        <div class="fw-bold text-success">0.5% per working day</div>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Withdrawal Period</small>
+                        <div class="fw-bold">Every 20 working days</div>
+                    </div>
+                    <div>
+                        <small class="text-muted">Next Interest Calculation</small>
+                        <div class="fw-bold">Tomorrow (Working Days Only)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Withdraw Modal -->
+<div class="modal fade" id="withdrawModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Withdraw Funds</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('withdraw') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Available Balance: ₦{{ "%.2f"|format(available_withdrawal) }}</label>
+                        <input type="number" class="form-control" name="amount" 
+                               placeholder="Enter amount" min="0.01" max="{{ available_withdrawal }}" 
+                               step="0.01" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Withdraw</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

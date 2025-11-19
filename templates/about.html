@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - MPS{% endblock %}
+
+{% block content %}
+        <!-- Header Start -->
+        <div class="container-fluid bg-breadcrumb">
+            <div class="bg-breadcrumb-single"></div>
+            <div class="container text-center py-5" style="max-width: 900px;">
+                <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">About Us</h4>
+                <ol class="breadcrumb justify-content-center mb-0 wow fadeInDown" data-wow-delay="0.3s">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                    <li class="breadcrumb-item active text-primary">About</li>
+                </ol>    
+            </div>
+        </div>
+        <!-- Header End -->
+
+        <!-- About Start -->
+        <div class="container-fluid about bg-light py-5">
+            <div class="container py-5">
+                <div class="row g-5 align-items-center">
+                    <div class="col-lg-6 col-xl-5 wow fadeInLeft" data-wow-delay="0.1s">
+                        <div class="about-img">
+                            <img src="{{ url_for('static', filename='img/about-1.jfif') }}" class="img-fluid w-100 rounded-top bg-white" alt="MPS Office">
+                            <img src="{{ url_for('static', filename='img/about-2.jfif') }}" class="img-fluid w-100 rounded-bottom" alt="MPS Team">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-xl-7 wow fadeInRight" data-wow-delay="0.3s">
+                        <h4 class="text-primary">About Us</h4>
+                        <h1 class="display-5 mb-4">The Leading Company for Profitable Investments Globally.</h1>
+                        <p class="text ps-4 mb-4">Welcome to MPS, your trusted partner in investment and financial growth. At MPS, we are committed to empowering individuals and businesses by providing innovative solutions to help you achieve your financial and professional goals.
+
+                            Founded with a vision to create opportunities and foster economic growth, MPS is built on the principles of trust, integrity, and excellence. We strive to deliver exceptional services tailored to meet the unique needs of our clients. We offer a diverse range of services designed to support your aspirations:
+                        </p>
+                        <div class="row g-4 justify-content-between mb-5">
+                            <div class="col-lg-6 col-xl-5">
+                                <p class="text-dark"><i class="fas fa-check-circle text-primary me-1"></i> Micro Mutual Fund Management</p>
+                                <p class="text-dark"><i class="fas fa-check-circle text-primary me-1"></i> Point of Sale (POS) Services</p>
+                                <p class="text-dark mb-0"><i class="fas fa-check-circle text-primary me-1"></i> Real Estate Agency and Development</p>
+                            </div>
+                            <div class="col-lg-6 col-xl-7">
+                                <p class="text-dark"><i class="fas fa-check-circle text-primary me-1"></i> Comprehensive Printing Solutions</p>
+                                <p class="text-dark mb-0"><i class="fas fa-check-circle text-primary me-1"></i> Mutual Community Finance Services</p>
+                                <p class="text-dark mb-0"><i class="fas fa-check-circle text-primary me-1"></i> Strategic Partnerships</p>
+                            </div>
+                        </div>
+                        <div class="row g-4 justify-content-between mb-5">
+                            <div class="col-xl-7 mb-5">
+                                <div class="about-customer d-flex position-relative">
+                                    <img src="{{ url_for('static', filename='img/cos-1.jfif') }}" class="img-fluid btn-xl-square position-absolute" style="left: 0; top: 0;"  alt="Client 1">
+                                    <img src="{{ url_for('static', filename='img/cos-2.jfif') }}" class="img-fluid btn-xl-square position-absolute" style="left: 45px; top: 0;" alt="Client 2">
+                                    <img src="{{ url_for('static', filename='img/cos-3.jfif') }}" class="img-fluid btn-xl-square position-absolute" style="left: 90px; top: 0;" alt="Client 3">
+                                    <img src="{{ url_for('static', filename='img/cos-4.jfif') }}" class="img-fluid btn-xl-square position-absolute" style="left: 135px; top: 0;" alt="Client 4">
+                                    <div class="position-absolute text-dark" style="left: 220px; top: 10px;">
+                                        <p class="mb-0">50k+ Trusted</p>
+                                        <p class="mb-0">Global Customers</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-5">
+                                <a href="{{ url_for('services') }}" class="btn btn-primary rounded-pill py-3 px-5">Our Services</a>
+                            </div>
+                        </div>
+                        <div class="row g-4 text-center align-items-center justify-content-center">
+                            <div class="col-sm-4">
+                                <div class="bg-primary rounded p-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="counter-value fs-1 fw-bold text-dark" data-toggle="counter-up">4</span>
+                                        <h4 class="text-dark fs-1 mb-0" style="font-weight: 600; font-size: 25px;">k+</h4>
+                                    </div>
+                                    <div class="w-100 d-flex align-items-center justify-content-center">
+                                        <p class="text-white mb-0">Projects Completed</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="bg-dark rounded p-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="counter-value fs-1 fw-bold text-white" data-toggle="counter-up">10</span>
+                                        <h4 class="text-white fs-1 mb-0" style="font-weight: 600; font-size: 25px;">+</h4>
+                                    </div>
+                                    <div class="w-100 d-flex align-items-center justify-content-center">
+                                        <p class="text-white mb-0">Years Experience</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="bg-primary rounded p-4">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <span class="counter-value fs-1 fw-bold text-dark" data-toggle="counter-up">25</span>
+                                        <h4 class="text-dark fs-1 mb-0" style="font-weight: 600; font-size: 25px;">+</h4>
+                                    </div>
+                                    <div class="w-100 d-flex align-items-center justify-content-center">
+                                        <p class="text-white mb-0">Team Members</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- About End -->
+
+        <!-- Mission & Vision Start -->
+        <div class="container-fluid py-5">
+            <div class="container py-5">
+                <div class="row g-5">
+                    <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="bg-light rounded p-5">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="bg-primary rounded-circle p-3 me-4">
+                                    <i class="fas fa-bullseye fa-2x text-white"></i>
+                                </div>
+                                <h3 class="mb-0">Our Mission</h3>
+                            </div>
+                            <p class="mb-4">To empower individuals and businesses with innovative financial solutions that drive sustainable growth, foster economic development, and create lasting value for our clients and communities.</p>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Provide accessible investment opportunities</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Deliver exceptional financial services</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Foster community development</li>
+                                <li class="mb-0"><i class="fas fa-check text-primary me-2"></i> Maintain transparency and integrity</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="bg-light rounded p-5">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="bg-primary rounded-circle p-3 me-4">
+                                    <i class="fas fa-eye fa-2x text-white"></i>
+                                </div>
+                                <h3 class="mb-0">Our Vision</h3>
+                            </div>
+                            <p class="mb-4">To be the leading global financial services company recognized for transforming lives through innovative investment solutions, community empowerment, and sustainable economic development.</p>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Global financial inclusion</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Technological innovation</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Sustainable growth</li>
+                                <li class="mb-0"><i class="fas fa-check text-primary me-2"></i> Community transformation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mission & Vision End -->
+
+        <!-- Values Start -->
+        <div class="container-fluid bg-light py-5">
+            <div class="container py-5">
+                <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
+                    <h4 class="text-primary">Our Values</h4>
+                    <h1 class="display-4">What We Stand For</h1>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="bg-white rounded p-4 text-center h-100">
+                            <div class="bg-primary rounded-circle p-3 d-inline-flex mb-4">
+                                <i class="fas fa-shield-alt fa-2x text-white"></i>
+                            </div>
+                            <h4 class="mb-3">Integrity</h4>
+                            <p class="mb-0">We conduct our business with honesty, transparency, and ethical practices, building trust with every client interaction.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="bg-white rounded p-4 text-center h-100">
+                            <div class="bg-primary rounded-circle p-3 d-inline-flex mb-4">
+                                <i class="fas fa-lightbulb fa-2x text-white"></i>
+                            </div>
+                            <h4 class="mb-3">Innovation</h4>
+                            <p class="mb-0">We continuously develop creative financial solutions that meet evolving market needs and client expectations.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="bg-white rounded p-4 text-center h-100">
+                            <div class="bg-primary rounded-circle p-3 d-inline-flex mb-4">
+                                <i class="fas fa-hands-helping fa-2x text-white"></i>
+                            </div>
+                            <h4 class="mb-3">Excellence</h4>
+                            <p class="mb-0">We strive for the highest standards in service delivery, ensuring exceptional results for all our clients.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Values End -->
+
+        <!-- Team Start -->
+        <!--<div class="container-fluid team pb-5">
+            <div class="container pb-5">
+                <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
+                    <h4 class="text-primary">Our Team</h4>
+                    <h1 class="display-4">Meet Our Dedicated Team</h1>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="team-item rounded">
+                            <div class="team-img">
+                                <img src="{{ url_for('static', filename='img/ceo-1.jpg') }}" class="img-fluid w-100 rounded-top" alt="Mas'ud Jiya - CEO">
+                                <div class="team-icon">
+                                    <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fas fa-share-alt"></i></a>
+                                    <div class="team-icon-share">
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-facebook-f"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-twitter"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-0" href=""><i class="fab fa-instagram"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-content bg-dark text-center rounded-bottom p-4">
+                                <div class="team-content-inner rounded-bottom">
+                                    <h4 class="text-white">Mas'ud Jiya</h4>
+                                    <p class="text-muted mb-0">CEO & Founder</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="team-item rounded">
+                            <div class="team-img">
+                                <img src="{{ url_for('static', filename='img/tech-1.jpg') }}" class="img-fluid w-100 rounded-top" alt="Y. Abuqataada - Tech Developer">
+                                <div class="team-icon">
+                                    <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fas fa-share-alt"></i></a>
+                                    <div class="team-icon-share">
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-facebook-f"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-twitter"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-0" href=""><i class="fab fa-instagram"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-content bg-dark text-center rounded-bottom p-4">
+                                <div class="team-content-inner rounded-bottom">
+                                    <h4 class="text-white">Y. Abuqataada</h4>
+                                    <p class="text-muted mb-0">Tech Developer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="team-item rounded">
+                            <div class="team-img">
+                                <img src="{{ url_for('static', filename='img/team-3.jpg') }}" class="img-fluid w-100 rounded-top" alt="Aleesha Gloria - Marketer">
+                                <div class="team-icon">
+                                    <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fas fa-share-alt"></i></a>
+                                    <div class="team-icon-share">
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-facebook-f"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-twitter"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-0" href=""><i class="fab fa-instagram"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-content bg-dark text-center rounded-bottom p-4">
+                                <div class="team-content-inner rounded-bottom">
+                                    <h4 class="text-white">Aleesha Gloria</h4>
+                                    <p class="text-muted mb-0">Marketing Executive</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.7s">
+                        <div class="team-item rounded">
+                            <div class="team-img">
+                                <img src="{{ url_for('static', filename='img/team-4.jpg') }}" class="img-fluid w-100 rounded-top" alt="David Benjamin - Financial Expert">
+                                <div class="team-icon">
+                                    <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fas fa-share-alt"></i></a>
+                                    <div class="team-icon-share">
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-facebook-f"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-3" href=""><i class="fab fa-twitter"></i></a>
+                                        <a class="btn btn-primary btn-sm-square text-white rounded-circle mb-0" href=""><i class="fab fa-instagram"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-content bg-dark text-center rounded-bottom p-4">
+                                <div class="team-content-inner rounded-bottom">
+                                    <h4 class="text-white">David Benjamin</h4>
+                                    <p class="text-muted mb-0">Financial Expert</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <!-- Team End -->
+{% endblock %}

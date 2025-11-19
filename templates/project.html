@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}Our Projects - MPS{% endblock %}
+
+{% block content %}
+        <!-- Header Start -->
+        <div class="container-fluid bg-breadcrumb">
+            <div class="bg-breadcrumb-single"></div>
+            <div class="container text-center py-5" style="max-width: 900px;">
+                <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s">Our Projects</h4>
+                <ol class="breadcrumb justify-content-center mb-0 wow fadeInDown" data-wow-delay="0.3s">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                    <li class="breadcrumb-item active text-primary">Projects</li>
+                </ol>    
+            </div>
+        </div>
+        <!-- Header End -->
+
+        <!-- Project Start -->
+        <div class="container-fluid project pt-5">
+            <div class="container pt-5">
+                <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
+                    <h4 class="text-primary">Our Projects</h4>
+                    <h1 class="display-4">Explore Our Latest Investment Projects</h1>
+                    <p class="mb-0">Discover how MPS is transforming lives and communities through innovative financial solutions and strategic investments.</p>
+                </div>
+                <div class="project-carousel owl-carousel wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="project-item h-100 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="project-img">
+                            <img src="{{ url_for('static', filename='img/project-micro-fund.jpg') }}" class="img-fluid w-100 rounded" alt="Micro Mutual Fund Project">
+                        </div>
+                        <div class="project-content bg-light rounded p-4">
+                            <div class="project-content-inner">
+                                <div class="project-icon mb-3"><i class="fas fa-chart-line fa-4x text-primary"></i></div>
+                                <p class="text-dark fs-5 mb-3">Micro Mutual Funds</p>
+                                <a href="#" class="h4">Community Micro-Investment Initiative</a>
+                                <p class="mb-3">Empowering 5,000+ small investors with daily returns and financial literacy programs across Nigeria.</p>
+                                <div class="project-stats mb-3">
+                                    <div class="row text-center">
+                                        <div class="col-6">
+                                            <h5 class="text-primary mb-1">₦250M+</h5>
+                                            <small>Total Investment</small>
+                                        </div>
+                                        <div class="col-6">
+                                            <h5 class="text-primary mb-1">5,200+</h5>
+                                            <small>Investors</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pt-4">
+                                    <a class="btn btn-primary rounded-pill py-3 px-5" href="{{ url_for('invest') }}">Invest Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-item h-100 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="project-img">
+                            <img src="{{ url_for('static', filename='img/project-real-estate.jpg') }}" class="img-fluid w-100 rounded" alt="Real Estate Development">
+                        </div>
+                        <div class="project-content bg-light rounded p-4">
+                            <div class="project-content-inner">
+                                <div class="project-icon mb-3"><i class="fas fa-building fa-4x text-primary"></i></div>
+                                <p class="text-dark fs-5 mb-3">Real Estate</p>
+                                <a href="#" class="h4">Abuja Luxury Apartments Development</a>
+                                <p class="mb-3">Premium residential complex offering 20% annual returns with 150 units completed and occupied.</p>
+                                <div class="project-stats mb-3">
+                                    <div class="row text-center">
+                                        <div class="col-6">
+                                            <h5 class="text-primary mb-1">₦2.5B</h5>
+                                            <small>Project Value</small>
+                                        </div>
+                                        <div class="col-6">
+                                            <h5 class="text-primary mb-1">20%</h5>
+                                            <small>Annual Returns</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pt-4">
+                                    <a class="btn btn-primary rounded-pill py-3 px-5" href="{{ url_for('invest') }}">Learn More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-item h-100 wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="project-img">
+                            <img src="{{ url_for('static', filename='img/project-community.jpg') }}" class="img-fluid w-100 rounded" alt="Community Finance Project">
+                        </div>
+                        <div class="project-content bg-light rounded p-4">
+                            <div class="project-content-inner">
+                                <div class="project-icon mb-3"><i class="fas fa-hands-helping fa-4x text-primary"></i></div>
+                                <p class="text-dark fs-5 mb-3">Community Finance</p>
+                                <a href="#" class="h4">Rural Empowerment Program</a>
+                                <p class="mb-3">Providing micro-loans and financial education to 200+ small businesses in rural communities.</p>
+                                <div class="project-stats mb-3">
+                                    <div class="row text-center">
+                                        <div class="col-6">
+                                            <h5 class="text-primary mb-1">₦50M</h5>
+                                            <small>Loans Disbursed</small>
+                                        </div>
+                                        <div class="col-6">
+                                            <h5 class="text-primary mb-1">98%</h5>
+                                            <small>Success Rate</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pt-4">
+                                    <a class="btn btn-primary rounded-pill py-3 px-5" href="{{ url_for('community_donate') }}">Support Project</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-item h-100 wow fadeInUp" data-wow-delay="0.7s">
+                        <div class="project-img">
+                            <img src="{{ url_for('static', filename='img/project-pos.jpg') }}" class="img-fluid w-100 rounded" alt="POS Services Expansion">
+                        </div>
+                        <div class="project-content bg-light rounded p-4">
+                            <div class="project-content-inner">
+                                <div class="project-icon mb-3"><i class="fas fa-credit-card fa-4x text-primary"></i></div>
+                                <p class="text-dark fs-5 mb-3">POS Services</p>
+                                <a href="#" class="h4">National POS Network Expansion</a>
+                                <p class="mb-3">Deploying 1,000+ POS terminals across underserved communities to promote financial inclusion.</p>
+                                <div class="project-stats mb-3">
+                                    <div class="row text-center">
+                                        <div class="col-6">
+                                            <h5 class="text-primary mb-1">1,000+</h5>
+                                            <small>Terminals</small>
+                                        </div>
+                                        <div class="col-6">
+                                            <h5 class="text-primary mb-1">15 States</h5>
+                                            <small>Coverage</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pt-4">
+                                    <a class="btn btn-primary rounded-pill py-3 px-5" href="{{ url_for('services') }}">Get POS</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Project End -->
+
+        <!-- Project Statistics Start -->
+        <div class="container-fluid bg-light py-5">
+            <div class="container py-5">
+                <div class="row g-4 text-center">
+                    <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="bg-white rounded p-4">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <span class="counter-value fs-1 fw-bold text-primary" data-toggle="counter-up">50</span>
+                                <h4 class="text-primary fs-1 mb-0">+</h4>
+                            </div>
+                            <p class="mb-0">Projects Completed</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                        <div class="bg-white rounded p-4">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <span class="counter-value fs-1 fw-bold text-primary" data-toggle="counter-up">3.5</span>
+                                <h4 class="text-primary fs-1 mb-0">B+</h4>
+                            </div>
+                            <p class="mb-0">Total Investment Value</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="bg-white rounded p-4">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <span class="counter-value fs-1 fw-bold text-primary" data-toggle="counter-up">15</span>
+                                <h4 class="text-primary fs-1 mb-0">K+</h4>
+                            </div>
+                            <p class="mb-0">Lives Impacted</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                        <div class="bg-white rounded p-4">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <span class="counter-value fs-1 fw-bold text-primary" data-toggle="counter-up">25</span>
+                                <h4 class="text-primary fs-1 mb-0">+</h4>
+                            </div>
+                            <p class="mb-0">Community Partners</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Project Statistics End -->
+
+        <!-- FAQ Start -->
+        <div class="container-fluid faq pb-5">
+            <div class="container pb-5">
+                <div class="row g-5 align-items-center">
+                    <div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.1s">
+                        <div class="pb-5">
+                            <h4 class="text-primary">Project FAQs</h4>
+                            <h1 class="display-4">Get the Answers to Common Questions</h1>
+                        </div>
+                       <div class="accordion bg-light rounded p-4" id="accordionExample">
+                            <div class="accordion-item border-0 mb-4">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button text-dark fs-5 fw-bold rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        How are investment projects selected?
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body my-2">
+                                        <h5>Rigorous Project Selection Process</h5>
+                                        <p>All MPS investment projects undergo a comprehensive due diligence process including market analysis, risk assessment, feasibility studies, and ROI projections. We prioritize projects with strong growth potential, social impact, and sustainable returns for our investors.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0 mb-4">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed text-dark fs-5 fw-bold rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        What is the minimum investment for projects?
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body my-2">
+                                        <h5>Flexible Investment Options</h5>
+                                        <p>Our micro mutual funds start from ₦5,000, making them accessible to everyone. Real estate projects typically require a minimum of ₦500,000. We offer various investment tiers to accommodate different budget levels while ensuring optimal returns.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0 mb-4">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed text-dark fs-5 fw-bold rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        How are returns distributed to investors?
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body my-2">
+                                        <h5>Transparent Return Distribution</h5>
+                                        <p>Returns are distributed according to each project's specific terms. Micro funds provide daily interest accessible after 20 working days. Real estate projects distribute returns quarterly or annually. All distributions are automated and visible in your dashboard with detailed transaction history.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0 mb-0">
+                                <h2 class="accordion-header" id="headingFour">
+                                    <button class="accordion-button collapsed text-dark fs-5 fw-bold rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                        Can I track my project investment performance?
+                                    </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body my-2">
+                                        <h5>Real-time Investment Tracking</h5>
+                                        <p>Yes! Our investor dashboard provides real-time updates on all your project investments. You can monitor performance metrics, track returns, view project progress reports, and access detailed analytics. Regular project updates and financial reports are also shared via email and in-app notifications.</p>
+                                    </div>
+                                </div>
+                            </div>
+                       </div>
+                    </div>
+                    <div class="col-lg-6 wow fadeInRight" data-wow-delay="0.3s">
+                        <div class="faq-img RotateMoveRight rounded">
+                            <img src="{{ url_for('static', filename='img/project-faq.jpg') }}" class="img-fluid rounded w-100" alt="Project Investment FAQ">
+                            <div class="mt-4 p-4 bg-light rounded">
+                                <h4 class="text-primary mb-3">Ready to Invest?</h4>
+                                <p class="mb-4">Join thousands of satisfied investors who are growing their wealth with MPS projects. Start with as little as ₦5,000 and watch your investment grow.</p>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary rounded-circle p-2 me-3">
+                                                <i class="fas fa-shield-alt text-white fa-lg"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Secure Investments</h6>
+                                                <p class="mb-0 text-muted">All projects are thoroughly vetted</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary rounded-circle p-2 me-3">
+                                                <i class="fas fa-chart-line text-white fa-lg"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Guaranteed Returns</h6>
+                                                <p class="mb-0 text-muted">Competitive and consistent returns</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary rounded-circle p-2 me-3">
+                                                <i class="fas fa-clock text-white fa-lg"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">24/7 Support</h6>
+                                                <p class="mb-0 text-muted">Dedicated investment support team</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="faq-btn btn btn-primary rounded-pill text-white py-3 px-5 w-100" href="{{ url_for('register') }}">
+                                    Start Investing Today <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FAQ End -->
+{% endblock %}
