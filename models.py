@@ -5,13 +5,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
-from datetime import datetime, date
-from werkzeug.security import generate_password_hash, check_password_hash
-
-db = SQLAlchemy()
-
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
@@ -42,13 +35,23 @@ class User(UserMixin, db.Model):
     
     # Authentication
     password_hash = db.Column(db.String(128))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     is_admin = db.Column(db.Boolean, default=False)
+    is_active = db.Column(db.Boolean, default=True)
+    last_login = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
     
-    # Relationships
-    investments = db.relationship('Investment', backref='user', lazy=True)
-    withdrawals = db.relationship('Withdrawal', backref='user', lazy=True)
-    community_donations = db.relationship('CommunityDonation', backref='user', lazy=True)
+    # Relationships with explicit foreign_keys
+    investments = db.relationship('Investment', backref='user', lazy=True, 
+                                 foreign_keys='Investment.user_id')
+    withdrawals = db.relationship('Withdrawal', backref='user', lazy=True, 
+                                 foreign_keys='Withdrawal.user_id')
+    community_donations = db.relationship('CommunityDonation', backref='user', lazy=True, 
+                                        foreign_keys='CommunityDonation.user_id')
+    processed_withdrawals = db.relationship('Withdrawal', backref='processor', lazy=True, 
+                                          foreign_keys='Withdrawal.processed_by')
+    processed_transactions = db.relationship('Transaction', backref='processor', lazy=True, 
+                                           foreign_keys='Transaction.processed_by')
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -70,6 +73,8 @@ class Investment(db.Model):
     total_interest = db.Column(db.Float, default=0.0)
     available_for_withdrawal = db.Column(db.Float, default=0.0)
     is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
     
     def calculate_interest(self):
         from datetime import datetime, timedelta
@@ -115,6 +120,7 @@ class Investment(db.Model):
         
         return working_days
 
+
 class Withdrawal(db.Model):
     __tablename__ = 'withdrawals'
 
@@ -124,6 +130,10 @@ class Withdrawal(db.Model):
     currency = db.Column(db.String(3), default='NGN')
     withdrawal_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     status = db.Column(db.String(20), default='pending')  # pending, completed, failed
+    admin_notes = db.Column(db.Text)
+    processed_by = db.Column(db.Integer, db.ForeignKey('users.id'))
+    processed_at = db.Column(db.DateTime)
+
 
 class CommunityDonation(db.Model):
     __tablename__ = 'community_donations'
@@ -136,6 +146,7 @@ class CommunityDonation(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     is_active = db.Column(db.Boolean, default=True)
 
+
 class SiteVisitor(db.Model):
     __tablename__ = 'site_visitors'
 
@@ -145,6 +156,7 @@ class SiteVisitor(db.Model):
     visit_date = db.Column(db.Date, default=date.today)
     visit_time = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     page_visited = db.Column(db.String(100))
+
 
 class Transaction(db.Model):
     __tablename__ = 'transactions'
@@ -157,3 +169,5 @@ class Transaction(db.Model):
     status = db.Column(db.String(20), default='pending')
     paystack_reference = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    admin_notes = db.Column(db.Text)
+    processed_by = db.Column(db.Integer, db.ForeignKey('users.id'))

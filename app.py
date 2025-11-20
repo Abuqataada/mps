@@ -2,13 +2,17 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, f
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, User, Investment, Withdrawal, CommunityDonation, SiteVisitor, Transaction
 from config import Config
-from datetime import datetime, date
+from datetime import datetime, date, timezone 
 import requests
 import json
 from forms import ContactForm, LoginForm
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
+from functools import wraps
+from flask import request, jsonify
+from sqlalchemy import func, desc
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -238,8 +242,10 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # If user is already logged in, redirect to dashboard
+    # If user is already logged in, redirect to appropriate dashboard
     if current_user.is_authenticated:
+        if current_user.is_admin:
+            return redirect(url_for('admin_dashboard'))
         return redirect(url_for('dashboard'))
     
     form = LoginForm()
@@ -255,15 +261,19 @@ def login():
             login_user(user, remember=remember)
             
             # Log the login
-            print(f"User {user.email} logged in successfully")
+            print(f"User {user.email} logged in successfully. Admin: {user.is_admin}")
             
-            # Redirect to next page if it exists, otherwise to dashboard
+            # Redirect based on user role
             next_page = request.args.get('next')
             if next_page:
                 return redirect(next_page)
             
-            flash('Login successful!', 'success')
-            return redirect(url_for('dashboard'))
+            if user.is_admin:
+                flash('Admin login successful!', 'success')
+                return redirect(url_for('admin_dashboard'))
+            else:
+                flash('Login successful!', 'success')
+                return redirect(url_for('dashboard'))
         else:
             flash('Invalid email or password. Please try again.', 'error')
     
@@ -438,33 +448,247 @@ def paystack_callback():
     
     return redirect(url_for('dashboard'))
 
-# Admin routes
+
+
+
+
+
+
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not current_user.is_admin:
+            flash('Admin access required.', 'error')
+            return redirect(url_for('dashboard'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# Admin Dashboard
 @app.route('/admin/dashboard')
 @login_required
+@admin_required
 def admin_dashboard():
-    if not current_user.is_admin:  # You'll need to add is_admin field to User model
-        flash('Access denied')
-        return redirect(url_for('dashboard'))
-    
     # Statistics
     total_visitors = SiteVisitor.query.count()
     total_users = User.query.count()
-    total_investments = Investment.query.filter_by(is_active=True).count()
-    total_investment_amount = db.session.query(db.func.sum(Investment.amount)).scalar() or 0
-    total_donations = CommunityDonation.query.filter_by(is_active=True).count()
+    today_visitors = SiteVisitor.query.filter(SiteVisitor.visit_date == date.today()).count()
+    total_investment_amount = db.session.query(func.sum(Investment.amount)).scalar() or 0
+    total_investments = Investment.query.count()
+    total_donations = CommunityDonation.query.count()
+    total_withdrawals = Withdrawal.query.count()
+    pending_withdrawals = Withdrawal.query.filter_by(status='pending').count()
     
-    # Visitor statistics
-    today_visitors = SiteVisitor.query.filter_by(visit_date=date.today()).count()
-    recent_visitors = SiteVisitor.query.order_by(SiteVisitor.visit_time.desc()).limit(10).all()
+    # Recent data
+    recent_visitors = SiteVisitor.query.order_by(desc(SiteVisitor.visit_time)).limit(10).all()
+    recent_users = User.query.order_by(desc(User.created_at)).limit(5).all()
+    recent_investments = Investment.query.order_by(desc(Investment.created_at)).limit(5).all()
     
     return render_template('admin_dashboard.html',
                          total_visitors=total_visitors,
                          total_users=total_users,
-                         total_investments=total_investments,
-                         total_investment_amount=total_investment_amount,
                          today_visitors=today_visitors,
+                         total_investment_amount=total_investment_amount,
+                         total_investments=total_investments,
+                         total_donations=total_donations,
+                         total_withdrawals=total_withdrawals,
+                         pending_withdrawals=pending_withdrawals,
                          recent_visitors=recent_visitors,
-                         total_donations=total_donations)
+                         recent_users=recent_users,
+                         recent_investments=recent_investments)
+
+# User Management
+@app.route('/admin/users')
+@login_required
+@admin_required
+def admin_users():
+    users = User.query.order_by(desc(User.created_at)).all()
+    return render_template('admin_users.html', users=users)
+
+@app.route('/admin/user/<int:user_id>')
+@login_required
+@admin_required
+def admin_user_detail(user_id):
+    user = User.query.get_or_404(user_id)
+    investments = Investment.query.filter_by(user_id=user_id).all()
+    withdrawals = Withdrawal.query.filter_by(user_id=user_id).all()
+    donations = CommunityDonation.query.filter_by(user_id=user_id).all()
+    
+    return render_template('admin_user_detail.html',
+                         user=user,
+                         investments=investments,
+                         withdrawals=withdrawals,
+                         donations=donations)
+
+@app.route('/admin/user/toggle_active/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def toggle_user_active(user_id):
+    user = User.query.get_or_404(user_id)
+    user.is_active = not user.is_active
+    db.session.commit()
+    
+    action = "activated" if user.is_active else "deactivated"
+    flash(f'User {user.email} has been {action}.', 'success')
+    return redirect(url_for('admin_users'))
+
+@app.route('/admin/user/make_admin/<int:user_id>', methods=['POST'])
+@login_required
+@admin_required
+def make_user_admin(user_id):
+    user = User.query.get_or_404(user_id)
+    user.is_admin = True
+    db.session.commit()
+    
+    flash(f'User {user.email} is now an administrator.', 'success')
+    return redirect(url_for('admin_users'))
+
+# Investment Management
+@app.route('/admin/investments')
+@login_required
+@admin_required
+def admin_investments():
+    investments = Investment.query.order_by(desc(Investment.created_at)).all()
+    return render_template('admin_investments.html', investments=investments)
+
+@app.route('/admin/investment/toggle_active/<int:investment_id>', methods=['POST'])
+@login_required
+@admin_required
+def toggle_investment_active(investment_id):
+    investment = Investment.query.get_or_404(investment_id)
+    investment.is_active = not investment.is_active
+    db.session.commit()
+    
+    action = "activated" if investment.is_active else "deactivated"
+    flash(f'Investment #{investment.id} has been {action}.', 'success')
+    return redirect(url_for('admin_investments'))
+
+# Withdrawal Management
+@app.route('/admin/withdrawals')
+@login_required
+@admin_required
+def admin_withdrawals():
+    status_filter = request.args.get('status', 'all')
+    
+    query = Withdrawal.query
+    
+    if status_filter != 'all':
+        query = query.filter_by(status=status_filter)
+    
+    withdrawals = query.order_by(desc(Withdrawal.withdrawal_date)).all()
+    return render_template('admin_withdrawals.html', withdrawals=withdrawals, status_filter=status_filter)
+
+@app.route('/admin/withdrawal/update_status/<int:withdrawal_id>', methods=['POST'])
+@login_required
+@admin_required
+def update_withdrawal_status(withdrawal_id):
+    withdrawal = Withdrawal.query.get_or_404(withdrawal_id)
+    new_status = request.form.get('status')
+    admin_notes = request.form.get('admin_notes', '')
+    
+    if new_status in ['pending', 'completed', 'failed']:
+        withdrawal.status = new_status
+        withdrawal.admin_notes = admin_notes
+        withdrawal.processed_by = current_user.id
+        withdrawal.processed_at = datetime.utcnow()
+        
+        db.session.commit()
+        flash(f'Withdrawal #{withdrawal.id} status updated to {new_status}.', 'success')
+    
+    return redirect(url_for('admin_withdrawals'))
+
+# Transaction Management
+@app.route('/admin/transactions')
+@login_required
+@admin_required
+def admin_transactions():
+    transactions = Transaction.query.order_by(desc(Transaction.created_at)).all()
+    return render_template('admin_transactions.html', transactions=transactions)
+
+@app.route('/admin/analytics')
+@login_required
+@admin_required
+def admin_analytics():
+    # Visitor analytics - get raw dates and convert to datetime for charting
+    visitor_stats_raw = db.session.query(
+        SiteVisitor.visit_date,
+        func.count(SiteVisitor.id).label('visitor_count')
+    ).group_by(SiteVisitor.visit_date).order_by(SiteVisitor.visit_date.desc()).limit(30).all()
+    
+    # Convert to proper format for charts
+    visitor_stats = []
+    for stat in visitor_stats_raw:
+        visitor_stats.append({
+            'visit_date': stat.visit_date,
+            'visitor_count': stat.visitor_count
+        })
+    
+    # User registration stats
+    user_stats_raw = db.session.query(
+        func.date(User.created_at).label('reg_date'),
+        func.count(User.id).label('user_count')
+    ).group_by(func.date(User.created_at)).order_by(desc('reg_date')).limit(30).all()
+    
+    user_stats = []
+    for stat in user_stats_raw:
+        user_stats.append({
+            'reg_date': stat.reg_date,
+            'user_count': stat.user_count
+        })
+    
+    # Investment stats
+    investment_stats_raw = db.session.query(
+        func.date(Investment.created_at).label('inv_date'),
+        func.count(Investment.id).label('investment_count'),
+        func.sum(Investment.amount).label('total_amount')
+    ).group_by(func.date(Investment.created_at)).order_by(desc('inv_date')).limit(30).all()
+    
+    investment_stats = []
+    for stat in investment_stats_raw:
+        investment_stats.append({
+            'inv_date': stat.inv_date,
+            'investment_count': stat.investment_count,
+            'total_amount': float(stat.total_amount or 0)
+        })
+    
+    return render_template('admin_analytics.html',
+                         visitor_stats=visitor_stats,
+                         user_stats=user_stats,
+                         investment_stats=investment_stats)
+
+# System Settings
+@app.route('/admin/settings')
+@login_required
+@admin_required
+def admin_settings():
+    return render_template('admin_settings.html')
+
+# API for charts
+@app.route('/admin/api/visitor_stats')
+@login_required
+@admin_required
+def api_visitor_stats():
+    stats = db.session.query(
+        SiteVisitor.visit_date,
+        func.count(SiteVisitor.id).label('count')
+    ).group_by(SiteVisitor.visit_date).order_by(SiteVisitor.visit_date).limit(30).all()
+    
+    data = {
+        'dates': [stat.visit_date.strftime('%Y-%m-%d') for stat in stats],
+        'counts': [stat.count for stat in stats]
+    }
+    
+    return jsonify(data)
+
+
+
+
+
+
+
+
+
+
 
 # Utility functions
 def initialize_paystack_payment(amount, email, reference):
@@ -500,11 +724,46 @@ def calculate_daily_interest():
             investment.calculate_interest()
         db.session.commit()
 
+def create_admin():
+    """Create an admin user"""    
+    # Check if admin already exists
+    existing_admin = User.query.filter_by(is_admin=True).first()
+    if existing_admin:
+        print(f"Admin already exists!")
+        return
+    
+    # Create admin user
+    admin = User(
+        email='admin@mps.com',
+        full_name='MPS Admin',
+        date_of_birth=date(1990, 1, 1),  # Default DOB
+        mobile_number="000-000-0000",    # Default phone
+        gender="prefer_not_to_say",      # Default gender
+        occupation="Administrator",      # Default occupation
+        id_type="Passport",              # Default ID type
+        id_number="ADMIN001",            # Default ID number
+        issued_state="Federal",          # Default state
+        issued_date=date.today(),        # Current date
+        expiry_date=date(2030, 1, 1),    # Future date
+        address_type="Residential",      # Default address type
+        nationality="National",          # Default nationality
+        state="Federal",                 # Default state
+        city="Capital",                  # Default city
+        street_address="Admin Address",  # Default address
+        postal_code="00000",             # Default postal code
+        is_admin=True                    # This is the important part!
+    )
+    admin.set_password('admin123')
+    
+    db.session.add(admin)
+    db.session.commit()
+    print(f"Admin user created successfully!")
 
+# Run the migration
 with app.app_context():
-        db.create_all()
+    db.create_all()
+    create_admin()
         
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)

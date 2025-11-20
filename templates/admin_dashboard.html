@@ -1,97 +1,269 @@
-{% extends "base.html" %}
+<!-- templates/admin_dashboard.html -->
+{% extends "admin_base.html" %}
+
+{% block title %}Admin Dashboard - MPS{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}System Overview & Statistics{% endblock %}
+
+{% block page_actions %}
+<div class="btn-group">
+    <button class="btn btn-admin" onclick="window.location.reload()">
+        <i class="fas fa-sync-alt"></i> Refresh
+    </button>
+</div>
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Admin Dashboard</h2>
-    
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-primary">
-                <div class="card-body">
-                    <h5>Total Visitors</h5>
-                    <h3>{{ total_visitors }}</h3>
+<div class="container-fluid">
+    <!-- Statistics Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card bg-primary">
+                <div class="stat-number">{{ total_users }}</div>
+                <div class="stat-label">Total Users</div>
+                <i class="fas fa-users fa-2x mt-2"></i>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card bg-success">
+                <div class="stat-number">{{ total_investments }}</div>
+                <div class="stat-label">Total Investments</div>
+                <i class="fas fa-chart-line fa-2x mt-2"></i>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card bg-warning">
+                <div class="stat-number">₦{{ "%.2f"|format(total_investment_amount) }}</div>
+                <div class="stat-label">Total Investment Amount</div>
+                <i class="fas fa-money-bill-wave fa-2x mt-2"></i>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card bg-danger">
+                <div class="stat-number">{{ pending_withdrawals }}</div>
+                <div class="stat-label">Pending Withdrawals</div>
+                <i class="fas fa-clock fa-2x mt-2"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <div class="row mt-4">
+        <div class="col-md-2">
+            <div class="card admin-card">
+                <div class="card-body text-center">
+                    <h5 class="text-primary">{{ total_visitors }}</h5>
+                    <small class="text-muted">Total Visitors</small>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-success">
-                <div class="card-body">
-                    <h5>Total Users</h5>
-                    <h3>{{ total_users }}</h3>
+        <div class="col-md-2">
+            <div class="card admin-card">
+                <div class="card-body text-center">
+                    <h5 class="text-success">{{ today_visitors }}</h5>
+                    <small class="text-muted">Today's Visitors</small>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-warning">
-                <div class="card-body">
-                    <h5>Today's Visitors</h5>
-                    <h3>{{ today_visitors }}</h3>
+        <div class="col-md-2">
+            <div class="card admin-card">
+                <div class="card-body text-center">
+                    <h5 class="text-info">{{ total_donations }}</h5>
+                    <small class="text-muted">Total Donations</small>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-info">
-                <div class="card-body">
-                    <h5>Total Investment</h5>
-                    <h3>₦{{ "%.2f"|format(total_investment_amount) }}</h3>
+        <div class="col-md-2">
+            <div class="card admin-card">
+                <div class="card-body text-center">
+                    <h5 class="text-warning">{{ total_withdrawals }}</h5>
+                    <small class="text-muted">Total Withdrawals</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card admin-card">
+                <div class="card-body text-center">
+                    <h5 class="text-danger">{{ users|selectattr('is_admin')|list|length }}</h5>
+                    <small class="text-muted">Admin Users</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card admin-card">
+                <div class="card-body text-center">
+                    <h5 class="text-secondary">{{ (users|length - users|selectattr('is_active')|list|length) }}</h5>
+                    <small class="text-muted">Inactive Users</small>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
+    <!-- Main Content Row -->
+    <div class="row mt-4">
+        <!-- Recent Users -->
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Recent Visitors</h5>
+            <div class="card admin-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-users text-primary"></i>
+                        Recent Users
+                    </h5>
+                    <a href="{{ url_for('admin_users') }}" class="btn btn-sm btn-admin">View All</a>
                 </div>
                 <div class="card-body">
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>IP Address</th>
-                                <th>Page</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for visitor in recent_visitors %}
-                            <tr>
-                                <td>{{ visitor.visit_date }}</td>
-                                <td>{{ visitor.ip_address }}</td>
-                                <td>{{ visitor.page_visited }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Joined</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in recent_users %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ user.full_name }}</strong>
+                                    </td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.created_at.strftime('%m/%d/%Y') }}</td>
+                                    <td>
+                                        {% if user.is_active %}
+                                            <span class="badge badge-active">Active</span>
+                                        {% else %}
+                                            <span class="badge badge-inactive">Inactive</span>
+                                        {% endif %}
+                                        {% if user.is_admin %}
+                                            <span class="badge badge-admin">Admin</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-        
+
+        <!-- Recent Investments -->
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>User Statistics</h5>
+            <div class="card admin-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-line text-success"></i>
+                        Recent Investments
+                    </h5>
+                    <a href="{{ url_for('admin_investments') }}" class="btn btn-sm btn-admin">View All</a>
                 </div>
                 <div class="card-body">
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Metric</th>
-                                <th>Count</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Active Investments</td>
-                                <td>{{ total_investments }}</td>
-                            </tr>
-                            <tr>
-                                <td>Community Donations</td>
-                                <td>{{ total_donations }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Amount</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for investment in recent_investments %}
+                                <tr>
+                                    <td>{{ investment.user.full_name }}</td>
+                                    <td>₦{{ "%.2f"|format(investment.amount) }}</td>
+                                    <td>
+                                        <span class="badge bg-info">{{ investment.investment_type }}</span>
+                                    </td>
+                                    <td>{{ investment.created_at.strftime('%m/%d/%Y') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card admin-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-bolt text-warning"></i>
+                        Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('admin_users') }}" class="btn btn-admin w-100 text-start">
+                                <i class="fas fa-users fa-2x mb-2"></i><br>
+                                Manage Users
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('admin_withdrawals') }}?status=pending" class="btn btn-admin w-100 text-start">
+                                <i class="fas fa-money-bill-wave fa-2x mb-2"></i><br>
+                                Process Withdrawals
+                                {% if pending_withdrawals > 0 %}
+                                <span class="badge bg-danger">{{ pending_withdrawals }} pending</span>
+                                {% endif %}
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('admin_analytics') }}" class="btn btn-admin w-100 text-start">
+                                <i class="fas fa-chart-bar fa-2x mb-2"></i><br>
+                                View Analytics
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{{ url_for('admin_settings') }}" class="btn btn-admin w-100 text-start">
+                                <i class="fas fa-cog fa-2x mb-2"></i><br>
+                                System Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Info -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card admin-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle text-info"></i>
+                        System Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Current Time:</strong>
+                            <span id="current-time"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Logged in as:</strong>
+                            {{ current_user.full_name }} (Admin)
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Last Login:</strong>
+                            {% if current_user.last_login %}
+                                {{ current_user.last_login.strftime('%Y-%m-%d %H:%M') }}
+                            {% else %}
+                                First login
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

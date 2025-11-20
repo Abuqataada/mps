@@ -1,0 +1,388 @@
+<!-- templates/admin_analytics.html -->
+{% extends "admin_base.html" %}
+
+{% block title %}Analytics - Admin{% endblock %}
+
+{% block page_title %}Analytics Dashboard{% endblock %}
+{% block page_subtitle %}System performance and user analytics{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+    .stat-card {
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        color: white;
+        text-align: center;
+    }
+    .data-table {
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-2">
+            <div class="stat-card bg-primary">
+                <h4>{{ visitor_stats|sum(attribute='visitor_count') }}</h4>
+                <p>30-Day Visitors</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stat-card bg-success">
+                <h4>{{ user_stats|sum(attribute='user_count') }}</h4>
+                <p>30-Day Registrations</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stat-card bg-info">
+                <h4>{{ investment_stats|sum(attribute='investment_count') }}</h4>
+                <p>30-Day Investments</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stat-card bg-warning">
+                <h4>₦{{ "%.2f"|format(investment_stats|sum(attribute='total_amount') or 0) }}</h4>
+                <p>30-Day Investment Amount</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stat-card bg-danger">
+                <h4>{{ ((visitor_stats|sum(attribute='visitor_count') or 0) / 30)|round(1) }}</h4>
+                <p>Avg Daily Visitors</p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stat-card bg-secondary">
+                <h4>{{ ((user_stats|sum(attribute='user_count') or 0) / 30)|round(1) }}</h4>
+                <p>Avg Daily Registrations</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row">
+        <!-- Visitor Statistics -->
+        <div class="col-md-6">
+            <div class="card admin-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Visitor Statistics (Last 30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="visitorChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Registration Statistics -->
+        <div class="col-md-6">
+            <div class="card admin-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">User Registration (Last 30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="userChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Investment Statistics -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card admin-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Investment Statistics (Last 30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="height: 400px;">
+                        <canvas id="investmentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Tables -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card admin-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Visitor Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Visitors</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stat in visitor_stats[:10] %}
+                                <tr>
+                                    <td>{{ stat.visit_date.strftime('%Y-%m-%d') if stat.visit_date is string else stat.visit_date }}</td>
+                                    <td>{{ stat.visitor_count }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">No visitor data available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card admin-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent User Registrations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Registrations</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stat in user_stats[:10] %}
+                                <tr>
+                                    <td>{{ stat.reg_date }}</td>
+                                    <td>{{ stat.user_count }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">No registration data available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card admin-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Investments</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Investments</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stat in investment_stats[:10] %}
+                                <tr>
+                                    <td>{{ stat.inv_date }}</td>
+                                    <td>{{ stat.investment_count }}</td>
+                                    <td>₦{{ "%.2f"|format(stat.total_amount or 0) }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted">No investment data available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Helper function to format dates
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return (date.getMonth() + 1) + '-' + date.getDate();
+        }
+
+        // Visitor Chart
+        const visitorCtx = document.getElementById('visitorChart').getContext('2d');
+        const visitorChart = new Chart(visitorCtx, {
+            type: 'line',
+            data: {
+                labels: [
+                    {% for stat in visitor_stats %}
+                    '{{ stat.visit_date.strftime("%m-%d") if stat.visit_date is not string else formatDate(stat.visit_date) }}'{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Daily Visitors',
+                    data: [
+                        {% for stat in visitor_stats %}
+                        {{ stat.visitor_count }}{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    ],
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+
+        // User Registration Chart
+        const userCtx = document.getElementById('userChart').getContext('2d');
+        const userChart = new Chart(userCtx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    {% for stat in user_stats %}
+                    '{{ stat.reg_date[-5:] }}'{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Daily Registrations',
+                    data: [
+                        {% for stat in user_stats %}
+                        {{ stat.user_count }}{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    ],
+                    backgroundColor: '#28a745'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+
+        // Investment Chart
+        const investmentCtx = document.getElementById('investmentChart').getContext('2d');
+        const investmentChart = new Chart(investmentCtx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    {% for stat in investment_stats %}
+                    '{{ stat.inv_date[-5:] }}'{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                datasets: [
+                    {
+                        label: 'Number of Investments',
+                        data: [
+                            {% for stat in investment_stats %}
+                            {{ stat.investment_count }}{% if not loop.last %},{% endif %}
+                            {% endfor %}
+                        ],
+                        backgroundColor: '#ffc107',
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Total Amount (₦)',
+                        data: [
+                            {% for stat in investment_stats %}
+                            {{ stat.total_amount or 0 }}{% if not loop.last %},{% endif %}
+                            {% endfor %}
+                        ],
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        type: 'line',
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Number of Investments'
+                        },
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Total Amount (₦)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

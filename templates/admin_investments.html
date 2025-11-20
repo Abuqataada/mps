@@ -1,0 +1,115 @@
+<!-- templates/admin_investments.html -->
+{% extends "admin_base.html" %}
+
+{% block title %}Investment Management - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-chart-line"></i> Investment Management</h1>
+            <p class="text-muted">Manage all investment records</p>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h4>{{ investments|length }}</h4>
+                    <p>Total Investments</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h4>{{ investments|selectattr('is_active')|list|length }}</h4>
+                    <p>Active Investments</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h4>₦{{ "%.2f"|format(investments|sum(attribute='amount')) }}</h4>
+                    <p>Total Amount</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h4>₦{{ "%.2f"|format(investments|sum(attribute='total_interest')) }}</h4>
+                    <p>Total Interest</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Investments Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">All Investments</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                            <th>Start Date</th>
+                            <th>Total Interest</th>
+                            <th>Available</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for investment in investments %}
+                        <tr>
+                            <td>{{ investment.id }}</td>
+                            <td>
+                                <strong>{{ investment.user.full_name }}</strong>
+                                <br><small class="text-muted">{{ investment.user.email }}</small>
+                            </td>
+                            <td>₦{{ "%.2f"|format(investment.amount) }}</td>
+                            <td>
+                                <span class="badge bg-info">{{ investment.investment_type }}</span>
+                            </td>
+                            <td>{{ investment.start_date.strftime('%Y-%m-%d') }}</td>
+                            <td>₦{{ "%.2f"|format(investment.total_interest) }}</td>
+                            <td>₦{{ "%.2f"|format(investment.available_for_withdrawal) }}</td>
+                            <td>
+                                {% if investment.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('toggle_investment_active', investment_id=investment.id) }}" 
+                                      style="display: inline;">
+                                    <button type="submit" class="btn btn-sm {% if investment.is_active %}btn-warning{% else %}btn-success{% endif %}" 
+                                            title="{% if investment.is_active %}Deactivate{% else %}Activate{% endif %}">
+                                        <i class="fas {% if investment.is_active %}fa-pause{% else %}fa-play{% endif %}"></i>
+                                    </button>
+                                </form>
+                                <a href="{{ url_for('admin_user_detail', user_id=investment.user.id) }}" 
+                                   class="btn btn-sm btn-info" title="View User">
+                                    <i class="fas fa-user"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

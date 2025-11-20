@@ -1,0 +1,130 @@
+<!-- templates/admin_transactions.html -->
+{% extends "admin_base.html" %}
+
+{% block title %}Transaction History - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-exchange-alt"></i> Transaction History</h1>
+            <p class="text-muted">View all system transactions</p>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h4>{{ transactions|length }}</h4>
+                    <p>Total Transactions</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h4>{{ transactions|selectattr('status', 'equalto', 'completed')|list|length }}</h4>
+                    <p>Completed</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h4>{{ transactions|selectattr('status', 'equalto', 'pending')|list|length }}</h4>
+                    <p>Pending</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h4>₦{{ "%.2f"|format(transactions|sum(attribute='amount')) }}</h4>
+                    <p>Total Amount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transactions Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">All Transactions</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Paystack Ref</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.id }}</td>
+                            <td>
+                                <strong>{{ transaction.user.full_name }}</strong>
+                                <br><small class="text-muted">{{ transaction.user.email }}</small>
+                            </td>
+                            <td>₦{{ "%.2f"|format(transaction.amount) }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if transaction.transaction_type == 'investment' %}bg-success
+                                    {% elif transaction.transaction_type == 'withdrawal' %}bg-warning
+                                    {% else %}bg-info{% endif %}">
+                                    {{ transaction.transaction_type|title }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if transaction.status == 'completed' %}bg-success
+                                    {% elif transaction.status == 'pending' %}bg-warning
+                                    {% else %}bg-danger{% endif %}">
+                                    {{ transaction.status|title }}
+                                </span>
+                            </td>
+                            <td>
+                                <small>{{ transaction.paystack_reference or 'N/A' }}</small>
+                            </td>
+                            <td>{{ transaction.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <a href="{{ url_for('admin_user_detail', user_id=transaction.user.id) }}" 
+                                   class="btn btn-sm btn-info" title="View User">
+                                    <i class="fas fa-user"></i>
+                                </a>
+                                {% if transaction.admin_notes %}
+                                <button type="button" class="btn btn-sm btn-secondary" 
+                                        data-bs-toggle="tooltip" title="{{ transaction.admin_notes }}">
+                                    <i class="fas fa-sticky-note"></i>
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
+{% endblock %}
