@@ -1,0 +1,144 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Community Donation - MPS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-hand-holding-heart me-2"></i>
+                        Community Donation
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Community Info -->
+                    <div class="alert alert-success mb-4">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-users me-2"></i>
+                            Support Our Community
+                        </h5>
+                        <p class="mb-0">
+                            Your donations help us build a stronger community and support various initiatives 
+                            that benefit all members. Every contribution makes a difference!
+                        </p>
+                    </div>
+
+                    <!-- Donation Form -->
+                    <form method="POST" action="{{ url_for('community_donate') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Donation Type -->
+                        <div class="mb-4">
+                            <label class="form-label">{{ form.donation_type.label }}</label>
+                            {{ form.donation_type(class="form-select") }}
+                            {% if form.donation_type.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.donation_type.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Monthly Amount (shown only when monthly is selected) -->
+                        <div class="mb-4" id="monthly-section" style="display: none;">
+                            <label class="form-label">{{ form.frequency.label }}</label>
+                            {{ form.frequency(class="form-select") }}
+                            {% if form.frequency.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.frequency.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Recurring monthly donation</div>
+                        </div>
+
+                        <!-- Custom Amount (shown only when one_time is selected) -->
+                        <div class="mb-4" id="custom-amount-section" style="display: none;">
+                            <label class="form-label">{{ form.custom_amount.label }}</label>
+                            {{ form.custom_amount(class="form-control", placeholder="Enter donation amount") }}
+                            {% if form.custom_amount.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.custom_amount.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Minimum one-time donation: ₦100</div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-success btn-lg") }}
+                        </div>
+                    </form>
+
+                    <!-- Donation Options Info -->
+                    <div class="mt-4">
+                        <h6 class="text-muted">Donation Options:</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-success mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <i class="fas fa-calendar-alt text-success me-2"></i>
+                                            Monthly Donation
+                                        </h6>
+                                        <p class="card-text small">
+                                            Consistent support with automatic monthly payments. Choose from ₦250, ₦500, or ₦1,000.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-primary mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <i class="fas fa-star text-primary me-2"></i>
+                                            One-time Donation
+                                        </h6>
+                                        <p class="card-text small">
+                                            Make a single donation of any amount (minimum ₦100). Perfect for occasional support.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const donationType = document.getElementById('{{ form.donation_type.id }}');
+    const monthlySection = document.getElementById('monthly-section');
+    const customAmountSection = document.getElementById('custom-amount-section');
+    
+    function toggleSections() {
+        if (donationType.value === 'monthly') {
+            monthlySection.style.display = 'block';
+            customAmountSection.style.display = 'none';
+        } else if (donationType.value === 'one_time') {
+            monthlySection.style.display = 'none';
+            customAmountSection.style.display = 'block';
+        } else {
+            monthlySection.style.display = 'none';
+            customAmountSection.style.display = 'none';
+        }
+    }
+    
+    // Initial toggle
+    toggleSections();
+    
+    // Toggle on change
+    donationType.addEventListener('change', toggleSections);
+});
+</script>
+{% endblock %}

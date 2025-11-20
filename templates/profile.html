@@ -1,0 +1,360 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}My Profile - MPS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-user-circle me-2"></i>
+                        My Profile
+                    </h1>
+                    <p class="text-muted mb-0">Manage your account information and preferences</p>
+                </div>
+                <div class="text-end">
+                    <small class="text-muted d-block">Member since {{ user.created_at.strftime('%B %Y') }}</small>
+                    {% if user.last_login %}
+                    <small class="text-muted">Last login: {{ user.last_login.strftime('%Y-%m-%d %H:%M') }}</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h4>₦{{ "%.2f"|format(total_invested) }}</h4>
+                    <p class="mb-0">Total Invested</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h4>₦{{ "%.2f"|format(total_withdrawn) }}</h4>
+                    <p class="mb-0">Total Withdrawn</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h4>₦{{ "%.2f"|format(total_donated) }}</h4>
+                    <p class="mb-0">Total Donated</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h4>{{ investments_count }}</h4>
+                    <p class="mb-0">Total Investments</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Profile Information -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-user-edit me-2"></i>
+                        Profile Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('profile') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <!-- Personal Information -->
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">
+                                    <i class="fas fa-id-card me-1"></i> Personal Information
+                                </h6>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">{{ form.full_name.label }}</label>
+                                    {{ form.full_name(class="form-control") }}
+                                    {% if form.full_name.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.full_name.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">{{ form.email.label }}</label>
+                                    {{ form.email(class="form-control", type="email") }}
+                                    {% if form.email.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.email.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">{{ form.mobile_number.label }}</label>
+                                    {{ form.mobile_number(class="form-control") }}
+                                    {% if form.mobile_number.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.mobile_number.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">{{ form.date_of_birth.label }}</label>
+                                    {{ form.date_of_birth(class="form-control", type="date") }}
+                                    {% if form.date_of_birth.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.date_of_birth.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">{{ form.gender.label }}</label>
+                                    {{ form.gender(class="form-select") }}
+                                    {% if form.gender.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.gender.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">{{ form.occupation.label }}</label>
+                                    {{ form.occupation(class="form-control") }}
+                                    {% if form.occupation.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.occupation.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Address Information -->
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">
+                                    <i class="fas fa-home me-1"></i> Address Information
+                                </h6>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">{{ form.nationality.label }}</label>
+                                    {{ form.nationality(class="form-control") }}
+                                    {% if form.nationality.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.nationality.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">{{ form.state.label }}</label>
+                                    {{ form.state(class="form-control") }}
+                                    {% if form.state.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.state.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">{{ form.city.label }}</label>
+                                    {{ form.city(class="form-control") }}
+                                    {% if form.city.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.city.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">{{ form.street_address.label }}</label>
+                                    {{ form.street_address(class="form-control", rows="2") }}
+                                    {% if form.street_address.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.street_address.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">{{ form.postal_code.label }}</label>
+                                    {{ form.postal_code(class="form-control") }}
+                                    {% if form.postal_code.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.postal_code.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+                            </a>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Summary & Actions -->
+        <div class="col-lg-4">
+            <!-- Account Status -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-user-shield me-2"></i>
+                        Account Status
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Status:</span>
+                        {% if user.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Role:</span>
+                        {% if user.is_admin %}
+                            <span class="badge bg-primary">Administrator</span>
+                        {% else %}
+                            <span class="badge bg-secondary">User</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Member Since:</span>
+                        <small>{{ user.created_at.strftime('%b %d, %Y') }}</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-bolt me-2"></i>
+                        Quick Actions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('change_password') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-key me-1"></i> Change Password
+                        </a>
+                        <a href="{{ url_for('transactions') }}" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-exchange-alt me-1"></i> View Transactions
+                        </a>
+                        <a href="{{ url_for('invest') }}" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-chart-line me-1"></i> Make Investment
+                        </a>
+                        <a href="{{ url_for('withdraw') }}" class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-money-bill-wave me-1"></i> Request Withdrawal
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Identity Information -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-id-card me-2"></i>
+                        Identity Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <small class="text-muted">ID Type:</small>
+                        <div class="fw-semibold">{{ user.id_type }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <small class="text-muted">ID Number:</small>
+                        <div class="fw-semibold font-monospace">{{ user.id_number }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <small class="text-muted">Issued State:</small>
+                        <div class="fw-semibold">{{ user.issued_state }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <small class="text-muted">Issued Date:</small>
+                        <div class="fw-semibold">{{ user.issued_date.strftime('%Y-%m-%d') }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <small class="text-muted">Expiry Date:</small>
+                        <div class="fw-semibold">{{ user.expiry_date.strftime('%Y-%m-%d') }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add real-time validation
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                } else {
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                }
+            });
+        });
+
+        // Auto-format mobile number
+        const mobileInput = document.getElementById('{{ form.mobile_number.id }}');
+        mobileInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                value = value.match(/.{1,4}/g).join('-');
+            }
+            e.target.value = value;
+        });
+    });
+</script>
+{% endblock %}

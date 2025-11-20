@@ -1,0 +1,105 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Withdraw Funds - MPS{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-money-bill-wave me-2"></i>
+                        Withdraw Funds
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Available Funds Info -->
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-wallet me-2"></i>
+                            Available for Withdrawal
+                        </h5>
+                        <p class="mb-0 fs-4">₦{{ "%.2f"|format(available_funds) }}</p>
+                        <small class="text-muted">This amount represents matured interest available for immediate withdrawal.</small>
+                    </div>
+
+                    <!-- Withdrawal Form -->
+                    <form method="POST" action="{{ url_for('withdraw') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Amount Field -->
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.amount.label }}</label>
+                            {{ form.amount(class="form-control", placeholder="Enter withdrawal amount") }}
+                            <div class="form-text">Minimum withdrawal: ₦100</div>
+                            {% if form.amount.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.amount.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Bank Details -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">{{ form.bank_name.label }}</label>
+                                {{ form.bank_name(class="form-control", placeholder="e.g., GTBank, Zenith Bank") }}
+                                {% if form.bank_name.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.bank_name.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">{{ form.account_number.label }}</label>
+                                {{ form.account_number(class="form-control", placeholder="10-digit account number") }}
+                                {% if form.account_number.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.account_number.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.account_name.label }}</label>
+                            {{ form.account_name(class="form-control", placeholder="Account holder name") }}
+                            {% if form.account_name.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.account_name.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+
+                    <!-- Important Notes -->
+                    <div class="mt-4">
+                        <h6 class="text-muted">Important Information:</h6>
+                        <ul class="small text-muted">
+                            <li>Withdrawals are processed within 24 hours on business days</li>
+                            <li>You can only withdraw matured interest, not principal investment</li>
+                            <li>Ensure your bank details are correct to avoid delays</li>
+                            <li>Contact support for any issues with your withdrawal</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -58,7 +58,7 @@ class User(UserMixin, db.Model):
     
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-        
+
 class Investment(db.Model):
     __tablename__ = 'investments'
 
@@ -128,7 +128,10 @@ class Withdrawal(db.Model):
     amount = db.Column(db.Float, nullable=False)
     currency = db.Column(db.String(3), default='NGN')
     withdrawal_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    status = db.Column(db.String(20), default='pending')  # pending, completed, failed
+    status = db.Column(db.String(20), default='pending')  # pending, processing, completed, failed
+    bank_name = db.Column(db.String(100))
+    account_number = db.Column(db.String(20))
+    account_name = db.Column(db.String(100))
     admin_notes = db.Column(db.Text)
     processed_by = db.Column(db.Integer, db.ForeignKey('users.id'))
     processed_at = db.Column(db.DateTime)

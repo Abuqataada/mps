@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, Response
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from models import db, User, Investment, Withdrawal, CommunityDonation, SiteVisitor, Transaction
 from config import Config
 from datetime import datetime, date, timezone 
 import requests
 import json
-from forms import ContactForm, LoginForm
+from forms import ContactForm, LoginForm, WithdrawalForm, CommunityDonationForm, ProfileForm, ChangePasswordForm
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -13,6 +13,9 @@ from email.mime.multipart import MIMEMultipart
 from functools import wraps
 from flask import request, jsonify
 from sqlalchemy import func, desc
+
+import csv
+from io import StringIO
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -308,13 +311,166 @@ def dashboard():
 @app.route('/transactions')
 @login_required
 def transactions():
-    transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.created_at.desc()).all()
-    return render_template('transactions.html', transactions=transactions)
+    # Get filter parameters
+    transaction_type = request.args.get('type', 'all')
+    status_filter = request.args.get('status', 'all')
+    
+    # Base query
+    query = Transaction.query.filter_by(user_id=current_user.id)
+    
+    # Apply filters
+    if transaction_type != 'all':
+        query = query.filter_by(transaction_type=transaction_type)
+    
+    if status_filter != 'all':
+        query = query.filter_by(status=status_filter)
+    
+    # Get transactions with pagination
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    
+    transactions_pagination = query.order_by(Transaction.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+    
+    # Calculate statistics
+    total_transactions = query.count()
+    total_amount = db.session.query(db.func.sum(Transaction.amount)).filter_by(user_id=current_user.id).scalar() or 0
+    
+    return render_template('transactions.html', 
+                         transactions=transactions_pagination.items,
+                         pagination=transactions_pagination,
+                         transaction_type=transaction_type,
+                         status_filter=status_filter,
+                         total_transactions=total_transactions,
+                         total_amount=total_amount)
 
-@app.route('/profile')
+@app.route('/export-transactions')
+@login_required
+def export_transactions():
+    # Get filter parameters
+    transaction_type = request.args.get('type', 'all')
+    status_filter = request.args.get('status', 'all')
+    
+    # Base query
+    query = Transaction.query.filter_by(user_id=current_user.id)
+    
+    # Apply filters
+    if transaction_type != 'all':
+        query = query.filter_by(transaction_type=transaction_type)
+    
+    if status_filter != 'all':
+        query = query.filter_by(status=status_filter)
+    
+    transactions = query.order_by(Transaction.created_at.desc()).all()
+    
+    # Create CSV
+    output = StringIO()
+    writer = csv.writer(output)
+    
+    # Write header
+    writer.writerow(['Date', 'Time', 'Type', 'Amount (₦)', 'Status', 'Reference', 'Description'])
+    
+    # Write data
+    for transaction in transactions:
+        writer.writerow([
+            transaction.created_at.strftime('%Y-%m-%d'),
+            transaction.created_at.strftime('%H:%M:%S'),
+            transaction.transaction_type.title(),
+            f"{transaction.amount:.2f}",
+            transaction.status.title(),
+            transaction.paystack_reference or 'N/A',
+            f"{transaction.transaction_type.title()} Transaction"
+        ])
+    
+    # Create response
+    output.seek(0)
+    return Response(
+        output,
+        mimetype="text/csv",
+        headers={
+            "Content-Disposition": f"attachment;filename=transactions_{datetime.utcnow().strftime('%Y%m%d')}.csv"
+        }
+    )
+
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template('profile.html', user=current_user)
+    form = ProfileForm(obj=current_user)
+    
+    if form.validate_on_submit():
+        try:
+            # Update user profile
+            current_user.full_name = form.full_name.data
+            current_user.email = form.email.data
+            current_user.mobile_number = form.mobile_number.data
+            current_user.date_of_birth = form.date_of_birth.data
+            current_user.gender = form.gender.data
+            current_user.occupation = form.occupation.data
+            current_user.nationality = form.nationality.data
+            current_user.state = form.state.data
+            current_user.city = form.city.data
+            current_user.street_address = form.street_address.data
+            current_user.postal_code = form.postal_code.data
+            
+            db.session.commit()
+            flash('Profile updated successfully!', 'success')
+            return redirect(url_for('profile'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('Error updating profile. Please try again.', 'error')
+    
+    # Get user statistics for the profile page
+    investments = Investment.query.filter_by(user_id=current_user.id).all()
+    withdrawals = Withdrawal.query.filter_by(user_id=current_user.id).all()
+    donations = CommunityDonation.query.filter_by(user_id=current_user.id).all()
+    
+    total_invested = sum(inv.amount for inv in investments)
+    total_withdrawn = sum(wd.amount for wd in withdrawals if wd.status == 'completed')
+    total_donated = sum(don.amount for don in donations)
+    
+    return render_template('profile.html', 
+                         form=form,
+                         user=current_user,
+                         total_invested=total_invested,
+                         total_withdrawn=total_withdrawn,
+                         total_donated=total_donated,
+                         investments_count=len(investments),
+                         withdrawals_count=len(withdrawals),
+                         donations_count=len(donations))
+
+@app.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    
+    if form.validate_on_submit():
+        current_password = form.current_password.data
+        new_password = form.new_password.data
+        confirm_password = form.confirm_password.data
+        
+        # Verify current password
+        if not current_user.check_password(current_password):
+            flash('Current password is incorrect', 'error')
+            return render_template('change_password.html', form=form)
+        
+        # Check if new passwords match
+        if new_password != confirm_password:
+            flash('New passwords do not match', 'error')
+            return render_template('change_password.html', form=form)
+        
+        # Update password
+        try:
+            current_user.set_password(new_password)
+            db.session.commit()
+            flash('Password updated successfully!', 'success')
+            return redirect(url_for('profile'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error updating password. Please try again.', 'error')
+    
+    return render_template('change_password.html', form=form)
 
 @app.route('/invest', methods=['GET', 'POST'])
 @login_required
@@ -359,75 +515,287 @@ def invest():
     
     return render_template('invest.html')
 
-@app.route('/withdraw', methods=['POST'])
+@app.route('/withdraw', methods=['GET', 'POST'])
 @login_required
 def withdraw():
-    amount = float(request.form.get('amount'))
-    currency = request.form.get('currency', 'NGN')
+    form = WithdrawalForm()
     
-    # Check if user has available funds
+    # Calculate available funds for withdrawal
     investments = Investment.query.filter_by(user_id=current_user.id, is_active=True).all()
     available_funds = sum(inv.available_for_withdrawal for inv in investments)
     
-    if amount <= available_funds:
-        withdrawal = Withdrawal(
-            user_id=current_user.id,
-            amount=amount,
-            currency=currency
-        )
-        
-        # Deduct from available funds
-        # This is a simplified implementation - you might want to track which investment the withdrawal comes from
-        remaining_amount = amount
-        for investment in investments:
-            if remaining_amount <= 0:
-                break
-            if investment.available_for_withdrawal > 0:
-                deduct_amount = min(remaining_amount, investment.available_for_withdrawal)
-                investment.available_for_withdrawal -= deduct_amount
-                remaining_amount -= deduct_amount
-        
-        db.session.add(withdrawal)
-        db.session.commit()
-        
-        flash('Withdrawal request submitted successfully!')
-    else:
-        flash('Insufficient available funds for withdrawal')
+    if request.method == 'GET':
+        # Display withdrawal form
+        return render_template('withdraw.html', 
+                             form=form, 
+                             available_funds=available_funds,
+                             user=current_user)
     
-    return redirect(url_for('dashboard'))
+    # POST method - process withdrawal
+    if form.validate_on_submit():
+        amount = form.amount.data
+        bank_name = form.bank_name.data
+        account_number = form.account_number.data
+        account_name = form.account_name.data
+        
+        # Validate amount
+        if amount < 100:
+            flash('Minimum withdrawal amount is ₦100', 'error')
+            return render_template('withdraw.html', 
+                                 form=form, 
+                                 available_funds=available_funds,
+                                 user=current_user)
+        
+        # Check if user has available funds
+        if amount > available_funds:
+            flash(f'Insufficient available funds. You have ₦{available_funds:,.2f} available for withdrawal.', 'error')
+            return render_template('withdraw.html', 
+                                 form=form, 
+                                 available_funds=available_funds,
+                                 user=current_user)
+        
+        try:
+            # Create withdrawal record
+            withdrawal = Withdrawal(
+                user_id=current_user.id,
+                amount=amount,
+                currency='NGN',
+                bank_name=bank_name,
+                account_number=account_number,
+                account_name=account_name
+            )
+            
+            # Deduct from available funds
+            remaining_amount = amount
+            for investment in investments:
+                if remaining_amount <= 0:
+                    break
+                if investment.available_for_withdrawal > 0:
+                    deduct_amount = min(remaining_amount, investment.available_for_withdrawal)
+                    investment.available_for_withdrawal -= deduct_amount
+                    remaining_amount -= deduct_amount
+            
+            db.session.add(withdrawal)
+            db.session.commit()
+            
+            flash('Withdrawal request submitted successfully! It will be processed within 24 hours.', 'success')
+            return redirect(url_for('dashboard'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while processing your withdrawal. Please try again.', 'error')
+            return render_template('withdraw.html', 
+                                 form=form, 
+                                 available_funds=available_funds,
+                                 user=current_user)
+    
+    else:
+        # Form validation failed
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'{getattr(form, field).label.text}: {error}', 'error')
+        return render_template('withdraw.html', 
+                             form=form, 
+                             available_funds=available_funds,
+                             user=current_user)
 
-@app.route('/community-donate', methods=['POST'])
+@app.route('/community-donate', methods=['GET', 'POST'])
 @login_required
 def community_donate():
-    amount = float(request.form.get('amount'))
-    frequency = request.form.get('frequency')
+    form = CommunityDonationForm()
     
-    donation = CommunityDonation(
-        user_id=current_user.id,
-        amount=amount,
-        donation_type='monthly' if frequency in ['250', '500', '1000'] else 'one_time',
-        frequency=frequency
-    )
+    if request.method == 'GET':
+        # Display donation form
+        return render_template('community_donate.html', 
+                             form=form,
+                             user=current_user)
     
-    transaction = Transaction(
-        user_id=current_user.id,
-        amount=amount,
-        transaction_type='donation'
-    )
+    # POST method - process donation
+    if form.validate_on_submit():
+        donation_type = form.donation_type.data
+        frequency = form.frequency.data
+        custom_amount = form.custom_amount.data
+        
+        try:
+            # Determine amount based on donation type
+            if donation_type == 'monthly':
+                if not frequency:
+                    flash('Please select a monthly amount', 'error')
+                    return render_template('community_donate.html', form=form, user=current_user)
+                amount = float(frequency)
+            else:
+                if not custom_amount or custom_amount < 100:
+                    flash('Minimum one-time donation is ₦100', 'error')
+                    return render_template('community_donate.html', form=form, user=current_user)
+                amount = custom_amount
+                frequency = None
+            
+            # Create donation record
+            donation = CommunityDonation(
+                user_id=current_user.id,
+                amount=amount,
+                donation_type=donation_type,
+                frequency=frequency
+            )
+            
+            # Create transaction record
+            transaction = Transaction(
+                user_id=current_user.id,
+                amount=amount,
+                transaction_type='donation',
+                status='pending'
+            )
+            
+            db.session.add(donation)
+            db.session.add(transaction)
+            db.session.flush()  # Get IDs without committing
+            
+            # Initialize Paystack payment
+            paystack_secret_key = os.environ.get('PAYSTACK_SECRET_KEY')
+            if not paystack_secret_key:
+                flash('Payment system temporarily unavailable. Please try again later.', 'error')
+                db.session.rollback()
+                return render_template('community_donate.html', form=form, user=current_user)
+            
+            # Paystack API request
+            url = "https://api.paystack.co/transaction/initialize"
+            headers = {
+                "Authorization": f"Bearer {paystack_secret_key}",
+                "Content-Type": "application/json"
+            }
+            
+            data = {
+                "email": current_user.email,
+                "amount": int(amount * 100),  # Convert to kobo
+                "currency": "NGN",
+                "callback_url": url_for('donation_verify', _external=True),
+                "reference": f"DON{transaction.id}",
+                "metadata": {
+                    "user_id": current_user.id,
+                    "donation_type": donation_type,
+                    "custom_fields": [
+                        {
+                            "display_name": "Full Name",
+                            "variable_name": "full_name", 
+                            "value": current_user.full_name
+                        },
+                        {
+                            "display_name": "Donation Type",
+                            "variable_name": "donation_type",
+                            "value": "Monthly Community Donation" if donation_type == 'monthly' else "One-time Community Donation"
+                        }
+                    ]
+                }
+            }
+            
+            response = requests.post(url, headers=headers, data=json.dumps(data))
+            
+            if response.status_code != 200:
+                flash('Payment initialization failed. Please try again.', 'error')
+                db.session.rollback()
+                return render_template('community_donate.html', form=form, user=current_user)
+            
+            paystack_data = response.json()
+            
+            if not paystack_data.get('status') or 'data' not in paystack_data:
+                error_message = paystack_data.get('message', 'Payment initialization failed')
+                flash(f'Payment error: {error_message}', 'error')
+                db.session.rollback()
+                return render_template('community_donate.html', form=form, user=current_user)
+            
+            # Update transaction with Paystack reference
+            transaction.paystack_reference = paystack_data['data']['reference']
+            db.session.commit()
+            
+            # Redirect to Paystack payment page
+            return redirect(paystack_data['data']['authorization_url'])
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while processing your donation. Please try again.', 'error')
+            return render_template('community_donate.html', form=form, user=current_user)
     
-    db.session.add(donation)
-    db.session.add(transaction)
-    db.session.commit()
-    
-    # Initialize Paystack payment
-    paystack_data = initialize_paystack_payment(amount, email=current_user.email, reference=f"DON{transaction.id}")
-    
-    if paystack_data:
-        return redirect(paystack_data['data']['authorization_url'])
     else:
-        flash('Payment initialization failed')
-    
-    return redirect(url_for('dashboard'))
+        # Form validation failed
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'{getattr(form, field).label.text}: {error}', 'error')
+        return render_template('community_donate.html', form=form, user=current_user)
+
+@app.route('/donation/verify')
+@login_required
+def donation_verify():
+    try:
+        reference = request.args.get('reference')
+        
+        if not reference:
+            flash('No payment reference provided', 'error')
+            return redirect(url_for('community_donate'))
+        
+        # Verify payment with Paystack
+        paystack_secret_key = os.environ.get('PAYSTACK_SECRET_KEY')
+        url = f"https://api.paystack.co/transaction/verify/{reference}"
+        headers = {
+            "Authorization": f"Bearer {paystack_secret_key}",
+            "Content-Type": "application/json"
+        }
+        
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code != 200:
+            flash('Payment verification failed. Please contact support.', 'error')
+            return redirect(url_for('community_donate'))
+        
+        verification_data = response.json()
+        
+        if not verification_data.get('status'):
+            flash('Payment verification failed.', 'error')
+            return redirect(url_for('community_donate'))
+        
+        # Check if payment was successful
+        if verification_data['data']['status'] == 'success':
+            # Find the transaction
+            transaction = Transaction.query.filter_by(
+                paystack_reference=reference, 
+                status='pending'
+            ).first()
+            
+            if transaction:
+                # Update transaction status
+                transaction.status = 'completed'
+                
+                # Update donation status
+                donation = CommunityDonation.query.filter_by(
+                    user_id=current_user.id,
+                    amount=transaction.amount
+                ).order_by(CommunityDonation.created_at.desc()).first()
+                
+                if donation:
+                    donation.is_active = True
+                
+                db.session.commit()
+                
+                flash('Thank you for your donation! Your contribution helps our community grow.', 'success')
+                return redirect(url_for('dashboard'))
+            else:
+                flash('Transaction not found. Please contact support.', 'error')
+                return redirect(url_for('community_donate'))
+        else:
+            # Payment failed
+            transaction = Transaction.query.filter_by(
+                paystack_reference=reference, 
+                status='pending'
+            ).first()
+            if transaction:
+                transaction.status = 'failed'
+                db.session.commit()
+            
+            flash('Payment failed. Please try again.', 'error')
+            return redirect(url_for('community_donate'))
+            
+    except Exception as e:
+        flash('Verification error. Please contact support.', 'error')
+        return redirect(url_for('community_donate'))
 
 @app.route('/paystack/callback')
 def paystack_callback():
