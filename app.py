@@ -305,7 +305,7 @@ def transactions():
 @login_required
 def profile():
     return render_template('profile.html', user=current_user)
-    
+
 @app.route('/invest', methods=['GET', 'POST'])
 @login_required
 def invest():
@@ -500,6 +500,10 @@ def calculate_daily_interest():
             investment.calculate_interest()
         db.session.commit()
 
+
+with app.app_context():
+        db.create_all()
+        
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
