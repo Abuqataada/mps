@@ -320,7 +320,7 @@ def profile():
 @login_required
 def invest():
     if request.method == 'POST':
-        amount = float(request.form.get('amount'))
+        """amount = float(request.form.get('amount'))
         investment_type = request.form.get('investment_type')
         currency = request.form.get('currency', 'NGN')
         
@@ -352,7 +352,10 @@ def invest():
         if paystack_data:
             return redirect(paystack_data['data']['authorization_url'])
         else:
-            flash('Payment initialization failed')
+            flash('Payment initialization failed')"""
+
+        flash('Payment initialized. Contact support for the next step.')
+        return render_template('invest.html')
     
     return render_template('invest.html')
 
