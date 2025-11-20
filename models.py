@@ -15,26 +15,26 @@ class User(UserMixin, db.Model):
     date_of_birth = db.Column(db.Date, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     mobile_number = db.Column(db.String(20), nullable=False)
-    gender = db.Column(db.String(20), nullable=False)  # Increased from 10 to 20
-    occupation = db.Column(db.String(100), nullable=False)  # Increased from 50 to 100
+    gender = db.Column(db.String(20), nullable=False)
+    occupation = db.Column(db.String(100), nullable=False)
     
     # Identity Details
     id_type = db.Column(db.String(50), nullable=False)
     id_number = db.Column(db.String(50), nullable=False)
-    issued_state = db.Column(db.String(100), nullable=False)  # Increased from 50 to 100
+    issued_state = db.Column(db.String(100), nullable=False)
     issued_date = db.Column(db.Date, nullable=False)
     expiry_date = db.Column(db.Date, nullable=False)
     
     # Address Details
-    address_type = db.Column(db.String(50), nullable=False)  # Increased from 20 to 50
-    nationality = db.Column(db.String(100), nullable=False)  # Increased from 50 to 100
-    state = db.Column(db.String(100), nullable=False)  # Increased from 50 to 100
-    city = db.Column(db.String(100), nullable=False)  # Increased from 50 to 100
+    address_type = db.Column(db.String(50), nullable=False)
+    nationality = db.Column(db.String(100), nullable=False)
+    state = db.Column(db.String(100), nullable=False)
+    city = db.Column(db.String(100), nullable=False)
     street_address = db.Column(db.String(200), nullable=False)
     postal_code = db.Column(db.String(20))
     
-    # Authentication
-    password_hash = db.Column(db.String(128))
+    # Authentication - INCREASED PASSWORD HASH SIZE
+    password_hash = db.Column(db.String(255), nullable=False)  # Increased from 128 to 255
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_admin = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=True)
@@ -58,7 +58,7 @@ class User(UserMixin, db.Model):
     
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
+        
 class Investment(db.Model):
     __tablename__ = 'investments'
 
